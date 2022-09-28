@@ -1,0 +1,217 @@
+---
+title: "Start here"
+author: "Hyunwoo Cho"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning=F,
+  message=F,
+  fig.width=7, fig.height=7,
+  echo=T
+)
+```
+
+### Preparing the data
+
+Download the sequence data from SRA and convert to `FASTQ` using this script.
+
+```{bash download1, eval=F}
+prefetch SRR111111xx
+fastq-dump SRR111111xx.sra --split-files --gzip -O SRR111111xx/
+```
+
+The `MD5` sum of the `fastq` files is attached below.
+
+```{bash md5sum-raw, eval=F}
+md5sum */*.fastq.gz
+c26b8147e6aee03d7f0ccfd0d949faa0  Sample_E223D0P531WT1_IGO_11351_C_1/E223D0P531WT1_IGO_11351_C_1_S12_L001_R1_001.fastq.gz
+9271783197d8b229f1f6dacd9217e784  Sample_E223D0P531WT1_IGO_11351_C_1/E223D0P531WT1_IGO_11351_C_1_S12_L001_R2_001.fastq.gz
+dc1475cfd4cfa66d655b929e463f8b20  Sample_E223D0P531WT1_IGO_11351_C_1/E223D0P531WT1_IGO_11351_C_1_S12_L002_R1_001.fastq.gz
+0d3c5fbf2c98a83b564b8d2850db4650  Sample_E223D0P531WT1_IGO_11351_C_1/E223D0P531WT1_IGO_11351_C_1_S12_L002_R2_001.fastq.gz
+c9479611bd09e0770ab361e8198dfd41  Sample_E223D0P531WT2_IGO_11351_C_2/E223D0P531WT2_IGO_11351_C_2_S13_L001_R1_001.fastq.gz
+5f7fe46ea95982a00fc4b4df30eac18e  Sample_E223D0P531WT2_IGO_11351_C_2/E223D0P531WT2_IGO_11351_C_2_S13_L001_R2_001.fastq.gz
+b3604dc08fd776f2cdea34e96b19e465  Sample_E223D0P531WT2_IGO_11351_C_2/E223D0P531WT2_IGO_11351_C_2_S13_L002_R1_001.fastq.gz
+def2c5c56286f6148efd0f286c1f6afd  Sample_E223D0P531WT2_IGO_11351_C_2/E223D0P531WT2_IGO_11351_C_2_S13_L002_R2_001.fastq.gz
+435eae5599b548b55df8a7792661cf01  Sample_E223D1CULTUREP53WT1_IGO_11351_C_5/E223D1CULTUREP53WT1_IGO_11351_C_5_S16_L001_R1_001.fastq.gz
+b1e8cf43d7ca63753fc8ae22bcdd99dc  Sample_E223D1CULTUREP53WT1_IGO_11351_C_5/E223D1CULTUREP53WT1_IGO_11351_C_5_S16_L001_R2_001.fastq.gz
+3089b20b2d14e40520095fc19a8332d2  Sample_E223D1CULTUREP53WT1_IGO_11351_C_5/E223D1CULTUREP53WT1_IGO_11351_C_5_S16_L002_R1_001.fastq.gz
+f65ca903729f727b924920900c1817df  Sample_E223D1CULTUREP53WT1_IGO_11351_C_5/E223D1CULTUREP53WT1_IGO_11351_C_5_S16_L002_R2_001.fastq.gz
+316e14c36fb4756c2801f6cd4ae4a9b5  Sample_E223D1CULTUREP53WT2_IGO_11351_C_6/E223D1CULTUREP53WT2_IGO_11351_C_6_S17_L001_R1_001.fastq.gz
+b1cc2dd04fe7f3587025e93c8789504a  Sample_E223D1CULTUREP53WT2_IGO_11351_C_6/E223D1CULTUREP53WT2_IGO_11351_C_6_S17_L001_R2_001.fastq.gz
+c0c68c3935a72ab26248ab7d58195e89  Sample_E223D1CULTUREP53WT2_IGO_11351_C_6/E223D1CULTUREP53WT2_IGO_11351_C_6_S17_L002_R1_001.fastq.gz
+58132b593bd16b88ede7615e5ba3c23e  Sample_E223D1CULTUREP53WT2_IGO_11351_C_6/E223D1CULTUREP53WT2_IGO_11351_C_6_S17_L002_R2_001.fastq.gz
+09bcae95b480c320b353f4f7aa2fe986  Sample_E223D1GRAFTP53WT1_IGO_11351_C_9/E223D1GRAFTP53WT1_IGO_11351_C_9_S20_L001_R1_001.fastq.gz
+8a99885cc8580660669adda688b0a226  Sample_E223D1GRAFTP53WT1_IGO_11351_C_9/E223D1GRAFTP53WT1_IGO_11351_C_9_S20_L001_R2_001.fastq.gz
+d98305de166e551069794e7e97d86d4a  Sample_E223D1GRAFTP53WT1_IGO_11351_C_9/E223D1GRAFTP53WT1_IGO_11351_C_9_S20_L002_R1_001.fastq.gz
+ebdffbe7a65eec434f85e3f4f8ccfb38  Sample_E223D1GRAFTP53WT1_IGO_11351_C_9/E223D1GRAFTP53WT1_IGO_11351_C_9_S20_L002_R2_001.fastq.gz
+5a60b4e7316edcc2dcf08d6c3aa64a1e  Sample_E223D1GRAFTP53WT2_IGO_11351_C_10/E223D1GRAFTP53WT2_IGO_11351_C_10_S11_L001_R1_001.fastq.gz
+affde9be3fc59f9c06398a3c915802e2  Sample_E223D1GRAFTP53WT2_IGO_11351_C_10/E223D1GRAFTP53WT2_IGO_11351_C_10_S11_L001_R2_001.fastq.gz
+9371d40e457f2d0f7b7e7f6261d33e55  Sample_E223D1GRAFTP53WT2_IGO_11351_C_10/E223D1GRAFTP53WT2_IGO_11351_C_10_S11_L002_R1_001.fastq.gz
+1989d64bdd173f8141a5369e3e73cc19  Sample_E223D1GRAFTP53WT2_IGO_11351_C_10/E223D1GRAFTP53WT2_IGO_11351_C_10_S11_L002_R2_001.fastq.gz
+```
+
+### Run alignment using this reproducible script:
+
+A human hg19 reference genome can be accessed at Illumina iGenomes page (<https://support.illumina.com/sequencing/sequencing_software/igenome.html>). 
+
+Start the two-pass alignment here.
+
+First pass.
+
+```{bash align1, eval=F}
+wget -c https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_38/GRCh37_mapping/gencode.v38lift37.annotation.gtf.gz
+gunzip -c gencode.v38lift37.annotation.gtf.gz
+
+STAR --version
+2.5.0a
+
+STAR --runMode alignReads --runThreadN 16 \
+  --genomeDir /directory/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta \
+  --limitBAMsortRAM 10000000000 --outSAMstrandField intronMotif --outSAMattrRGline ID:{} PL:ILLUMINA SM:{} \
+  --readFilesIn \
+    E223D0P531WT1_IGO_11351_C_1_S12_L001_trimmed_R1.fastq.gz,E223D0P531WT1_IGO_11351_C_1_S12_L002_trimmed_R1.fastq.gz \
+    E223D0P531WT1_IGO_11351_C_1_S12_L001_trimmed_R2.fastq.gz,E223D0P531WT1_IGO_11351_C_1_S12_L002_trimmed_R2.fastq.gz \
+  --readFilesCommand zcat --outFileNamePrefix E223D0P531WT1_IGO_11351_C_1_S12/E223D0P531WT1_IGO_11351_C_1_S12. \
+  --outFilterIntronMotifs RemoveNoncanonicalUnannotated --outSAMattributes All --outSAMunmapped Within \
+  --outSAMtype BAM Unsorted --outBAMcompression -1 --outFilterMultimapNmax 1 --outFilterMismatchNoverLmax 0.06 \
+  --outFilterMatchNmin 30 --outSJfilterOverhangMin 30 10 10 10 --seedSearchStartLmax 30 --alignIntronMin 20 \
+  --alignIntronMax 20000 --alignEndsType Local
+
+# rm -i E223D0P531WT1_IGO_11351_C_1_S12/*.bam
+
+```
+
+Second pass.
+
+```{bash align2, eval=F}
+# filter sjdb.
+cat E223D0P531WT1_IGO_11351_C_1_S12/*SJ.out.tab | awk '($1 != "chrM" && $5 > 0 && $6 == 0 && $7 > 2)' | cut -f1-6 | sort | uniq > SJ.filtered.tab
+
+# genome generate
+STAR --runMode genomeGenerate --runThreadN 16 --genomeDir `pwd` \
+  --genomeFastaFiles /directory/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa \
+  --sjdbGTFfile gencode.v38lift37.annotation.gtf --sjdbOverhang 100 --sjdbFileChrStartEnd SJ.filtered.tab
+
+# alignment
+STAR --runMode alignReads --runThreadN 16 \
+  --genomeDir `pwd` \
+  --limitBAMsortRAM 10000000000 --outSAMstrandField intronMotif --outSAMattrRGline ID:{} PL:ILLUMINA SM:{} \
+  --readFilesIn \
+    E223D0P531WT1_IGO_11351_C_1_S12_L001_trimmed_R1.fastq.gz,E223D0P531WT1_IGO_11351_C_1_S12_L002_trimmed_R1.fastq.gz \
+    E223D0P531WT1_IGO_11351_C_1_S12_L001_trimmed_R2.fastq.gz,E223D0P531WT1_IGO_11351_C_1_S12_L002_trimmed_R2.fastq.gz \
+  --readFilesCommand zcat --outFileNamePrefix E223D0P531WT1_IGO_11351_C_1_S12/E223D0P531WT1_IGO_11351_C_1_S12.Twopass. \
+  --outFilterIntronMotifs RemoveNoncanonicalUnannotated --outSAMattributes All --outSAMunmapped Within \
+  --outSAMtype BAM SortedByCoordinate --outBAMcompression -1 --outFilterMultimapNmax 1 \
+  --outFilterMismatchNoverLmax 0.06 --outFilterMatchNmin 30 --outSJfilterOverhangMin 30 10 10 10 \
+  --seedSearchStartLmax 30 --alignIntronMin 20 --alignIntronMax 20000 --alignEndsType Local
+
+htseq-count --version
+# 1.99.2
+htseq-count -f bam -r pos -s no -t CDS -i gene_name -m union E223D0P531WT1_IGO_11351_C_1_S12.Twopass.bam gencode.v38lift37.annotation.gtf > Proj_11351_C_s_E223D0P531WT1-htseq-count-matrix.txt
+```
+
+The output of the gene quantification can also be accessed at <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE18xxxx>.
+
+The `MD5` sum of the gene quantification files is attached below.
+
+```{bash md5sum-processed, eval=F}
+md5sum *-htseq-count-matrix.txt
+79fa5a164ee02c16c59bef06697a9d1c  Proj_11351_C_s_E223D0P531WT1-htseq-count-matrix.txt
+cc4d5f75f9625560a2e575cda67249e2  Proj_11351_C_s_E223D0P531WT2-htseq-count-matrix.txt
+049542fc33223c02bc6d095274f66f25  Proj_11351_C_s_E223D1CULTUREP53WT1-htseq-count-matrix.txt
+96bc008e91c147f2747977a4e82a5401  Proj_11351_C_s_E223D1CULTUREP53WT2-htseq-count-matrix.txt
+d24d8c218f8f2d486ca771d5df4e4198  Proj_11351_C_s_E223D1GRAFTP53WT1-htseq-count-matrix.txt
+0b8ab35617d9cb5ddea79e6e37e2acda  Proj_11351_C_s_E223D1GRAFTP53WT2-htseq-count-matrix.txt
+```
+
+```{r load-1, include=F}
+library(data.table); library(rtracklayer); library(DESeq2); library(magrittr)
+```
+
+Load the gene quantification results and make a `DESeq2` object.
+
+```{r prepare-1}
+fn = dir(path=".", pattern="*-htseq-count-matrix.txt", recursive=T, full.names=T)
+fn %>% file.exists
+
+mySampleName = gsub("Proj_11351_C_s_E223", "", gsub("-htseq.*", "", basename(fn)))
+mySampleTable = data.frame(sampleName=mySampleName, fileName=fn, condition=factor(c("D0", "D0", "D1Culture", "D1Culture", "D1Graft", "D1Graft"), levels=c("D0", "D1Culture", "D1Graft")))
+
+DESeq2Obj = DESeqDataSetFromHTSeqCount(sampleTable=mySampleTable, directory=".", design= ~ condition)
+DESeq2Obj %<>% DESeq
+DESeq2Obj.vst = varianceStabilizingTransformation(DESeq2Obj)
+dim(DESeq2Obj)
+```
+
+Figure 3A
+
+```{r pca-1}
+p1 = plotPCA(DESeq2Obj.vst, ntop=3000, intgroup="condition", returnData=T)
+
+library(ggplot2); library(ggrepel)
+percentVar = round(100 * attr(p1, "percentVar"))
+ggplot() + geom_point(data=p1, aes(PC1, PC2, color=condition), size=4.0) +
+  xlab(paste0("PC1: ", percentVar[1], "%")) + ylab(paste0("PC2: ", percentVar[2], "%")) + coord_fixed() +
+  theme(panel.grid=element_blank()) +
+  geom_text_repel(data=p1, aes(PC1, PC2, label=row.names(p1)), size=3, max.overlaps=30, segment.alpha=0.1, box.padding=0.2, point.padding=0.20)
+```
+
+```{r pc-coordinates-1}
+p1
+```
+
+Note that the ellipses in the paper were added manually.
+
+Figure S5A
+
+```{r pca-2}
+ntop.3000.selector = rowVars(assay(DESeq2Obj.vst)) %>% order(decreasing=T) %>% head(3000)
+library(NMF); library(amap)
+row.hclust = hcluster(dist(t(assay(DESeq2Obj.vst)[ntop.3000.selector, ])), method="euclidean", link="single")
+row.hclust.d = as.dendrogram(row.hclust)
+labels(row.hclust.d)
+
+# normalized DESeq2 counts, log2 transform, top 3000 genes, correlation metric, ward linkage
+row.hclust.all = hcluster(dist(t(log2(counts(DESeq2Obj, normalized=T) + 1)[ntop.3000.selector, ])), method="correlation", link="ward")
+library(dendextend)
+row.hclust.all.d = as.dendrogram(row.hclust.all)
+row.hclust.all.d = row.hclust.all.d %>% set("labels", c("Day 1 Culture replicate 1", "Day 1 Culture replicate 2", "Day 0 replicate 1", "Day 0 replicate 2", "Day 1 Graft replicate 1", "Day 1 Graft replicate 2")) %>% set("leaves_pch", 19) %>% set("leaves_cex", 1.5) %>% set("leaves_col", c("green", "green", "red", "red", "blue", "blue"))
+par(mar=c(0.6, 0.6, 0.6, 10.1))
+plot(row.hclust.all.d, sub="", xlab="", yaxt="n", horiz=T)
+```
+
+Figure 3B
+```{r ma-plot-1}
+diffExprLst.list = list(
+  D0.D1Culture=results(DESeq2Obj, contrast=c("condition", "D1Culture", "D0"), alpha=0.05),
+  D0.D1Graft=results(DESeq2Obj, contrast=c("condition", "D1Graft", "D0"), alpha=0.05),
+  D1Culture.D1Graft=results(DESeq2Obj, contrast=c("condition", "D1Graft", "D1Culture"), alpha=0.05)
+)
+for (j in 1:length(diffExprLst.list)) {
+  diffExprLst.list[[j]]$padj[is.na(diffExprLst.list[[j]]$padj)] = 1.0
+}
+
+plotMA(diffExprLst.list[[3]], alpha=0.05, main="D1 Culture to D1 Graft", sub="Q value 0.05", xlab="", ylim=c(-6.0, +6.0), ylab="log2 fold change", cex.axis=0.80)
+title(xlab="mean of normalized counts", cex.lab=0.80)
+legend("topright", inset=c(0.10, 0), legend=sum(diffExprLst.list[[3]]$padj <= 0.05 & diffExprLst.list[[3]]$log2FoldChange >= 0), bty="n", cex=1.30)
+legend("bottomright", inset=c(0.10, 0), legend=sum(diffExprLst.list[[3]]$padj <= 0.05 & diffExprLst.list[[3]]$log2FoldChange < 0), bty="n", cex=1.30)
+```
+
+Figure 3C
+
+Figure S5B
+
+Figure S5C
+
+Figure 3D
+
+Figure 3E
+
+
+
+
+
+
