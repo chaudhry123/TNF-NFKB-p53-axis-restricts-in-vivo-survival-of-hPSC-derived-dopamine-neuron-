@@ -1,5 +1,5 @@
 ---
-title: "Start here"
+title: "Figure 1 processing script"
 author: "Hyunwoo Cho"
 date: "`r Sys.Date()`"
 output: html_document
@@ -28,47 +28,51 @@ print("fig-1b-here")
 
 
 ```{r load-library-2, include=F}
+library(data.table)
 library(openxlsx)
+library(magrittr)
 ```
 
 Figure 1C
-```{r fig-1c}
+```{r load-1c-data-1, echo=F}
 volcano.input = list(
-  read.xlsx("fig-1c-input.xlsx", sheet=1),
-  read.xlsx("fig-1c-input.xlsx", sheet=2),
-  read.xlsx("fig-1c-input.xlsx", sheet=3),
-  read.xlsx("fig-1c-input.xlsx", sheet=4)
+  fread("internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_NoDox_July2018_All.txt"),
+  fread("internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_PlusDox_July2018_All.txt"),
+  fread("internal-data/First_Large_pool_Day25_NoDox_July2018_vs_Day25_PlusDox_July2018_All.txt"),
+  fread("internal-data/First_Large_pool_Day25_PlusDox_July2018_vs_Day25_PlusGRAFT_All.txt")
 )
+```
 
-plot(volcano.input[[1]][, 2], volcano.input[[1]][, 3], pch=20, cex=0.70,
-  col=ifelse(volcano.input[[1]][, 3] >= 5.0, "black", "grey70"),
-  xlim=c(-1.0, +1.5), ylim=c(0, 20)
-)
-abline(h=5.0, col="grey50", lty=2)
+```{r fig-1c}
+# volcano.input = list(
+#   fread("1c.1.txt"),
+#   fread("1c.2.txt"),
+#   fread("1c.3.txt"),
+#   fread("1c.4.txt")
+# )
 
-plot(volcano.input[[2]][, 2], volcano.input[[2]][, 3], pch=20, cex=0.70,
-  col=ifelse(volcano.input[[2]][, 3] >= 5.0, "black", "grey70"),
-  xlim=c(-1.0, +1.5), ylim=c(0, 20)
-)
-abline(h=5.0, col="grey50", lty=2)
-text.show.2 = volcano.input[[2]][grep("sgBCL2L1_", volcano.input[[2]][, 1]), ]
-text(x=text.show.2[, 2], y=text.show.2[, 3] + 1.0, labels=text.show.2[, 1])
-
-plot(volcano.input[[3]][, 2], volcano.input[[3]][, 3], pch=20, cex=0.70,
-  col=ifelse(volcano.input[[3]][, 3] >= 5.0, "black", "grey70"),
-  xlim=c(-1.0, +1.5), ylim=c(0, 20)
-)
-abline(h=5.0, col="grey50", lty=2)
-text.show.3 = volcano.input[[3]][grep("sgBCL2L1_", volcano.input[[3]][, 1]), ]
-text(x=text.show.3[, 2], y=text.show.3[, 3] + 1.0, labels=text.show.3[, 1])
-
-plot(volcano.input[[4]][, 2], volcano.input[[4]][, 3], pch=20, cex=0.70,
-  col=ifelse(volcano.input[[4]][, 3] >= 5.0, "black", "grey70"),
-  xlim=c(-1.0, +1.5), ylim=c(0, 20)
-)
-abline(h=5.0, col="grey50", lty=2)
-text.show.4 = volcano.input[[4]][grep("sgTP53", volcano.input[[4]][, 1]), ]
-text(x=text.show.4[, 2], y=text.show.4[, 3] + 1.0, labels=text.show.4[, 1])
+for (j in 1:length(volcano.input)) {
+  plot(-log10(PValue) ~ logFC, data=volcano.input[[j]], pch=20, cex=0.70,
+    col=ifelse(volcano.input[[j]]$PValue <= 1e-5, "black", "grey50"),
+    xlim=c(-1.0, +1.5), ylim=c(0, 20),
+    xlab=expression("log"[2] * " (fold change)"), ylab=expression("-log"[10] * " (p-value)"),
+    yaxt="n"
+  )
+  axis(side=2, at=seq(0, 20, by=5), las=2)
+  abline(h=5.0, col="grey80", lty=2)
+  if (j == 1) {
+  }
+  if (j == 2 | j == 3) {
+    text.show = volcano.input[[j]][grep("^BCL2L1_", volcano.input[[j]]$sgRNA), ]
+    text(x=text.show$logFC, y=-log10(text.show$PValue) + 1.0, labels=paste0("sg", text.show$sgRNA))
+    points(text.show$logFC, -log10(text.show$PValue), pch=20, cex=1.10, col="red")
+  }
+  if (j == 4) {
+    text.show = volcano.input[[j]][grep("^TP53_", volcano.input[[j]]$sgRNA), ]
+    text(x=text.show$logFC, y=-log10(text.show$PValue) + 1.0, labels=paste0("sg", text.show$sgRNA))
+    points(text.show$logFC, -log10(text.show$PValue), pch=20, cex=1.10, col="blue")
+  }
+}
 ```
 
 Figure 1E
@@ -88,19 +92,79 @@ pheatmap(correlation.output, cluster_rows=F, cluster_cols=F, border_color="black
 ```
 
 Figure 1F
-```{r fig-1f}
-heatmap.input = cbind(
-  c(-0.0165782, -0.0047367, -0.0090594, -0.0036821, -0.0100582, -0.0015941, 0.00204447, 0.00535296, -0.0166796, -0.0063498, -0.0119492, -0.0014037, -0.0130518, -0.0040778, -0.0140498, -0.0039513, 0.00892923, -0.0038289, -0.0017354, 0.00869498, -0.0032629, -0.0185003, -0.0080443, -0.0038401, 0.00124816, -0.0151339, 0.01545386, -0.0020138, -0.0028616, -0.0035868, -0.0039058, -0.0067485),
-  c(-0.0437371, -0.0062643, 0.01081928, -0.0061276, -0.0151058, 0.01185327, -0.0028545, 0.00264918, 0, -0.0132574, -0.0134188, -0.0029211, -0.0051474, 0.01209403, -0.0008212, -0.0064227, 0.01205981, 0.01664639, 0.00793326, 0.00611238, -0.0021838, -0.019319, -0.0022611, 0.00200725, 0.00573075, -0.0070468, 0.02067808, -0.0072382, -0.006352, 0.02084439, 0.00346889, 0.00937137),
-  c(-0.0271589, -0.0015276, 0.0198787, -0.0024455, -0.0050476, 0.01344736, -0.004899, -0.0027038, 0.01667964, -0.0069076, -0.0014696, -0.0015174, 0.00790444, 0.0161718, 0.01322858, -0.0024714, 0.003130580, 0.02047526, 0.00966864, -0.0025826, 0.00107903, -0.0008187, 0.00578325, 0.00584734, 0.00448259, 0.00808715, 0.00522422, -0.0052244, -0.0034904, 0.02443118, 0.00737465, 0.01611988),
-  c(-0.0360795, 0.00646372, -0.0154228, 0.01124101, -0.0149436, 0.03837116, 0.00719857, -0.0171693, 0.03909726, -0.0439681, -0.0794048, 0.01455659, -0.0031395, 0.01606358, -0.0125673, -0.0420127, -0.0069415, 0.0378287, 0.02503672, 0.02967342, 0.00788701, 0.02511509, 0.00476449, 0.05886714, -0.0031584, 0.01336897, 0.08854081, 0.02170257, 0.04423226, 0.04736031, 0.07578284, 0.02732082),
-  c(-0.0778676, -0.0048161, 0.00719522, 0.00601926, -0.002289, -0.0182418, -0.0244228, 0, 0.00871386, -0.0557669, 0.00623524, 0.00109481, -0.0040742, -0.0173248, -0.0150332, -0.037252, -0.0080152, 0.01270147, 0.01299241, -0.0101972, 0.01642426, 0.01463421, 0.02069699, 0.0004051, 0.02621258, 0.00971823, 0.04225707, 0.03442039, 0.01336859, 0.080958, 0.08035364, 0.03470606)
+```{r load-1f-data-1, echo=F}
+heatmap.input = list(
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=1),
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=2),
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=3),
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=4),
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=5),
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=6)
 )
 
-pheatmap(heatmap.input[, 1:3], cluster_rows=F, cluster_cols=F, border_color=NA,
-  color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
+heatmap.pre.left = Reduce(function(a, b) merge(a, b, by="NAME"), heatmap.input[1:4])
+heatmap.left = data.frame(
+  row.names=heatmap.pre.left[, 1],
+  "D16.D25m"=heatmap.pre.left[, 9] / heatmap.pre.left[, 5],
+  "D16.D25p"=heatmap.pre.left[, 12] / heatmap.pre.left[, 5],
+  "D25m.D25p"=heatmap.pre.left[, 12] / heatmap.pre.left[, 9]
+) %>% log2
+
+heatmap.pre.right = Reduce(function(a, b) merge(a, b, by="NAME"), heatmap.input[5:6])
+heatmap.right = data.frame(
+  row.names=heatmap.pre.right[, 1],
+  "Small.pool.1"=heatmap.pre.right[, 5],
+  "Small.pool.2"=heatmap.pre.right[, 2]
+) %>% log2
+```
+
+```{r fig-1f}
+# heatmap.pre.left = fread("heatmap.pre.left.txt")
+# heatmap.pre.right = fread("heatmap.pre.right.txt")
+
+row.order = c(
+  paste0("BCL2L11_", 1:3),
+  paste0("CASP2_", 1:3),
+  paste0("CASP9_", 1:2),
+  "SafeHarborchr11_38", "SafeHarborchr4_9", "SafeHarborchr9_18",
+  paste0("SLC7A11_", 1:3),
+  paste0("TLR4_", 1:3),
+  paste0("TNFRSF11B_", 1:3),
+  paste0("IL18_", 1:3),
+  paste0("NTC_", 1:3),
+  paste0("BBC3_", 1:3),
+  paste0("TP53_", 1:3)
 )
-pheatmap(heatmap.input[, 4:5], cluster_rows=F, cluster_cols=F, border_color=NA,
-  color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
+
+heatmap.left = heatmap.left[!grepl("CASP9_3", heatmap.pre.left[, 1]), ]
+rownames(heatmap.left)[grep("NonTargetingControl", rownames(heatmap.left))] = paste0("NTC_", 1:3)
+heatmap.left = heatmap.left[row.order, ]
+
+heatmap.right = heatmap.right[!grepl("CASP9_3", heatmap.pre.right[, 1]), ]
+rownames(heatmap.right)[grep("NonTargetingControl", rownames(heatmap.right))] = paste0("NTC_", 1:3)
+heatmap.right = heatmap.right[row.order, ]
+
+# heatmap.input = cbind(
+#   c(-0.0165782, -0.0047367, -0.0090594, -0.0036821, -0.0100582, -0.0015941, 0.00204447, 0.00535296, -0.0166796, -0.0063498, -0.0119492, -0.0014037, -0.0130518, -0.0040778, -0.0140498, -0.0039513, 0.00892923, -0.0038289, -0.0017354, 0.00869498, -0.0032629, -0.0185003, -0.0080443, -0.0038401, 0.00124816, -0.0151339, 0.01545386, -0.0020138, -0.0028616, -0.0035868, -0.0039058, -0.0067485),
+#   c(-0.0437371, -0.0062643, 0.01081928, -0.0061276, -0.0151058, 0.01185327, -0.0028545, 0.00264918, 0, -0.0132574, -0.0134188, -0.0029211, -0.0051474, 0.01209403, -0.0008212, -0.0064227, 0.01205981, 0.01664639, 0.00793326, 0.00611238, -0.0021838, -0.019319, -0.0022611, 0.00200725, 0.00573075, -0.0070468, 0.02067808, -0.0072382, -0.006352, 0.02084439, 0.00346889, 0.00937137),
+#   c(-0.0271589, -0.0015276, 0.0198787, -0.0024455, -0.0050476, 0.01344736, -0.004899, -0.0027038, 0.01667964, -0.0069076, -0.0014696, -0.0015174, 0.00790444, 0.0161718, 0.01322858, -0.0024714, 0.003130580, 0.02047526, 0.00966864, -0.0025826, 0.00107903, -0.0008187, 0.00578325, 0.00584734, 0.00448259, 0.00808715, 0.00522422, -0.0052244, -0.0034904, 0.02443118, 0.00737465, 0.01611988),
+#   c(-0.0360795, 0.00646372, -0.0154228, 0.01124101, -0.0149436, 0.03837116, 0.00719857, -0.0171693, 0.03909726, -0.0439681, -0.0794048, 0.01455659, -0.0031395, 0.01606358, -0.0125673, -0.0420127, -0.0069415, 0.0378287, 0.02503672, 0.02967342, 0.00788701, 0.02511509, 0.00476449, 0.05886714, -0.0031584, 0.01336897, 0.08854081, 0.02170257, 0.04423226, 0.04736031, 0.07578284, 0.02732082),
+#   c(-0.0778676, -0.0048161, 0.00719522, 0.00601926, -0.002289, -0.0182418, -0.0244228, 0, 0.00871386, -0.0557669, 0.00623524, 0.00109481, -0.0040742, -0.0173248, -0.0150332, -0.037252, -0.0080152, 0.01270147, 0.01299241, -0.0101972, 0.01642426, 0.01463421, 0.02069699, 0.0004051, 0.02621258, 0.00971823, 0.04225707, 0.03442039, 0.01336859, 0.080958, 0.08035364, 0.03470606)
+# )
+
+# pheatmap(heatmap.input[, 1:3], cluster_rows=F, cluster_cols=F, border_color=NA,
+#   color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
+# )
+# pheatmap(heatmap.input[, 4:5], cluster_rows=F, cluster_cols=F, border_color=NA,
+#   color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
+# )
+
+pheatmap(heatmap.left, cluster_rows=F, cluster_cols=F, border_color=NA,
+  show_rownames=T, show_colnames=F,
+  color=colorRampPalette(c("blue", "white", "red"))(100)# , breaks=seq(-0.30, +0.30, length.out=100)
+)
+pheatmap(heatmap.right, cluster_rows=F, cluster_cols=F, border_color=NA,
+  show_rownames=T, show_colnames=F,
+  color=colorRampPalette(c("blue", "white", "red"))(100)# , breaks=seq(-0.30, +0.30, length.out=100)
 )
 ```

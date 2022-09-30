@@ -1,5 +1,5 @@
 ---
-title: "Start here"
+title: "Figure 3 and S5 processing script"
 author: "Hyunwoo Cho"
 date: "`r Sys.Date()`"
 output: html_document
@@ -133,8 +133,8 @@ library(data.table); library(rtracklayer); library(DESeq2); library(magrittr)
 
 Load the gene quantification results and make a `DESeq2` object.
 
-```{r prepare-1}
-fn = dir(path=".", pattern="*-htseq-count-matrix.txt", recursive=T, full.names=T)
+```{r prepare-1, cache=T}
+fn = dir(path="internal-data", pattern="*-htseq-count-matrix.txt", recursive=T, full.names=T)
 fn %>% file.exists
 
 mySampleName = gsub("Proj_11351_C_s_E223", "", gsub("-htseq.*", "", basename(fn)))
@@ -196,8 +196,8 @@ for (j in 1:length(diffExprLst.list)) {
 
 plotMA(diffExprLst.list[[3]], alpha=0.05, main="D1 Culture to D1 Graft", sub="Q value 0.05", xlab="", ylim=c(-6.0, +6.0), ylab="log2 fold change", cex.axis=0.80)
 title(xlab="mean of normalized counts", cex.lab=0.80)
-legend("topright", inset=c(0.10, 0), legend=sum(diffExprLst.list[[3]]$padj <= 0.05 & diffExprLst.list[[3]]$log2FoldChange >= 0), bty="n", cex=1.30)
-legend("bottomright", inset=c(0.10, 0), legend=sum(diffExprLst.list[[3]]$padj <= 0.05 & diffExprLst.list[[3]]$log2FoldChange < 0), bty="n", cex=1.30)
+legend("topright", inset=c(0, 0), legend=sum(diffExprLst.list[[3]]$padj <= 0.05 & diffExprLst.list[[3]]$log2FoldChange >= 0), bty="n", cex=1.30, text.col="red")
+legend("bottomright", inset=c(0, 0), legend=sum(diffExprLst.list[[3]]$padj <= 0.05 & diffExprLst.list[[3]]$log2FoldChange < 0), bty="n", cex=1.30, text.col="blue")
 ```
 
 Figure 3C
@@ -210,6 +210,17 @@ Figure 3D
 
 Figure 3E
 
+Figure S5H
+```{r plotcounts-1}
+p.h1 = plotCounts(DESeq2Obj, gene="TNFSF10", intgroup="condition", returnData=T)
+p.h2 = plotCounts(DESeq2Obj, gene="TNFSF12", intgroup="condition", returnData=T)
+p.h.combine = data.frame(rbind(p.h1, p.h2), gene=rep(c("TNFSF10", "TNFSF12"), each=6))
+p.h.combine$x = paste0(p.h.combine$gene, ".", p.h.combine$condition)
+
+library(ggplot2); library(ggpubr)
+ggplot(data=p.h.combine) + geom_point(aes(x, count, color=gene)) + scale_color_manual(values=c("TNFSF10"="#F7989B", "TNFSF12"="#FFD479")) + coord_trans(y="log2") + scale_x_discrete(labels=rep(c("D0", "D1 in vitro", "D1 in vivo"), 2)) + xlab("") + ylab("DESeq2 normalized counts") + theme_bw() + rotate_x_text(angle=30)
+# 
+```
 
 
 

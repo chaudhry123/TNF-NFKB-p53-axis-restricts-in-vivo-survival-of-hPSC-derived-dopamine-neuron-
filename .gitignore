@@ -1,3 +1,5 @@
 **/.DS_Store
 **/._.DS_Store
-Bulk-RNAseq-processing/*htseq*.txt
+**/*_cache
+CRISPR-screen-processing/internal-data
+Bulk-RNAseq-processing/internal-data
