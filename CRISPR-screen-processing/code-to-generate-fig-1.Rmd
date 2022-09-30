@@ -76,23 +76,7 @@ for (j in 1:length(volcano.input)) {
 ```
 
 Figure 1E
-```{r fig-1e}
-correlation.input = cbind(
-  c(36951, 39522, 53081, 31144, 34112, 39725, 32237, 33085, 58393, 37407, 37208, 33476, 50716, 35569, 36015, 42876, 53956, 43403, 30356, 24336, 39745, 42539, 41750, 43862, 37958, 43898, 38440, 34914, 34998, 31216, 40739, 35959),
-  c(32302, 33600, 45448, 27019, 29319, 33994, 28845, 28476, 49964, 31083, 32011, 27701, 42399, 30426, 30178, 36697, 46241, 37071, 26287, 21439, 33387, 35474, 35225, 37625, 32300, 37593, 32507, 29883, 29088, 27514, 35037, 30480),
-  c(39505, 42912, 55614, 32877, 35649, 42550, 35926, 34921, 61137, 39749, 40631, 34024, 53790, 38863, 37819, 45772, 57047, 45460, 32685, 26226, 40948, 44475, 42848, 45932, 39122, 48940, 41877, 38550, 33626, 34104, 44087, 38012),
-  c(29708, 35816, 44707, 25086, 32981, 38075, 30307, 27999, 44428, 32989, 33348, 28845, 41031, 30768, 30894, 39775, 46344, 35767, 25921, 20947, 29414, 36372, 33206, 37898, 27571, 42330, 31745, 32132, 24182, 26432, 36729, 31750)
-)
-
-correlation.output = cor(correlation.input)
-pheatmap(correlation.output, cluster_rows=F, cluster_cols=F, border_color="black",
-  color=colorRampPalette(c("white", "grey45"))(100), breaks=seq(0.90, 1.00, length.out=100),
-  display_numbers=round(correlation.output, 2), fontsize_number=10
-)
-```
-
-Figure 1F
-```{r load-1f-data-1, echo=F}
+```{r load-1e-data-1, echo=F}
 heatmap.input = list(
   read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=1),
   read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=2),
@@ -101,6 +85,41 @@ heatmap.input = list(
   read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=5),
   read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=6)
 )
+
+heatmap.pre.cor = list(
+  "D16C"=data.frame(NAME=heatmap.input[[1]]$NAME, count1=heatmap.input[[1]][, 5]),
+  "D25Cm"=data.frame(NAME=heatmap.input[[2]]$NAME, count2=heatmap.input[[2]][, 5]),
+  "D25Cp"=data.frame(NAME=heatmap.input[[3]]$NAME, count3=heatmap.input[[3]][, 4]),
+  "D25Gp"=data.frame(NAME=heatmap.input[[4]]$NAME, count4=heatmap.input[[4]][, 5])
+)
+
+heatmap.merged.cor = Reduce(function(a, b) merge(a, b, by="NAME"), heatmap.pre.cor)
+heatmap.merged.cor = heatmap.merged.cor[!grepl("CASP9_3", heatmap.merged.cor$NAME), ]
+
+
+```
+
+```{r fig-1e}
+correlation.input = cbind(
+  c(36951, 39522, 53081, 31144, 34112, 39725, 32237, 33085, 58393, 37407, 37208, 33476, 50716, 35569, 36015, 42876, 53956, 43403, 30356, 24336, 39745, 42539, 41750, 43862, 37958, 43898, 38440, 34914, 34998, 31216, 40739, 35959),
+  c(32302, 33600, 45448, 27019, 29319, 33994, 28845, 28476, 49964, 31083, 32011, 27701, 42399, 30426, 30178, 36697, 46241, 37071, 26287, 21439, 33387, 35474, 35225, 37625, 32300, 37593, 32507, 29883, 29088, 27514, 35037, 30480),
+  c(39505, 42912, 55614, 32877, 35649, 42550, 35926, 34921, 61137, 39749, 40631, 34024, 53790, 38863, 37819, 45772, 57047, 45460, 32685, 26226, 40948, 44475, 42848, 45932, 39122, 48940, 41877, 38550, 33626, 34104, 44087, 38012),
+  c(29708, 35816, 44707, 25086, 32981, 38075, 30307, 27999, 44428, 32989, 33348, 28845, 41031, 30768, 30894, 39775, 46344, 35767, 25921, 20947, 29414, 36372, 33206, 37898, 27571, 42330, 31745, 32132, 24182, 26432, 36729, 31750)
+)
+
+# correlation.output = cor(correlation.input)
+correlation.output = cor(heatmap.merged.cor[, -1])
+colnames(correlation.output) = rownames(correlation.output) = c("D16 C", "-D25 C", "+D25 C", "+D25 G")
+pheatmap(correlation.output, cluster_rows=F, cluster_cols=F, border_color="black",
+  color=colorRampPalette(c("white", "grey45"))(100), breaks=seq(0.90, 1.00, length.out=100),
+  display_numbers=round(correlation.output, 2), fontsize_number=10
+)
+
+```
+
+Figure 1F
+```{r load-1f-data-1, echo=F}
+# heatmap.input = heatmap.input from figure 1e
 
 heatmap.pre.left = Reduce(function(a, b) merge(a, b, by="NAME"), heatmap.input[1:4])
 heatmap.left = data.frame(
