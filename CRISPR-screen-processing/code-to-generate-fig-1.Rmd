@@ -25,7 +25,7 @@ Figure 1B
 
 The panel is based on the matrix of Pearson correlation of the median-normalized CRISPR screen counts.
 
-```{r load-fig-1b-1, echo=F}
+```{r load-fig-1b-1, include=F}
 large.screen.data = list(
   D16=read.xlsx("internal-data/220929 large pool gRNA raw and processed.xlsx", sheet=1, rows=1:539),
   D25m=read.xlsx("internal-data/220929 large pool gRNA raw and processed.xlsx", sheet=2, rows=1:539),
@@ -34,7 +34,7 @@ large.screen.data = list(
 )
 ```
 
-```{r fig-1b-1}
+```{r fig-1b-1, eval=F}
 # large.screen.data = list(
 #   D16=fread("column 1.txt"),
 #   D25m=fread("column 2.txt"),
@@ -73,25 +73,16 @@ normalize.1b = list(
 
 library(DESeq2)
 
-prenormalized.1b.df = merge(normalize.1b$D16, normalize.1b$D25m, by="NAME")
-prenormalized.1b.df = merge(prenormalized.1b.df, normalize.1b$D25p, by="NAME")
-prenormalized.1b.df = merge(prenormalized.1b.df, normalize.1b$D25g, by="NAME")
+prenormalized.1b.df = Reduce(function(a, b) merge(a, b, by="NAME"), normalize.1b)
 
 myColData = DataFrame(row.names=names(normalize.1b), condition=factor(names(normalize.1b)))
 DESeq2.1b = DESeqDataSetFromMatrix(data.frame(row.names=prenormalized.1b.df$NAME, prenormalized.1b.df[, -1]), colData=myColData, design= ~ condition)
 
 DESeq2.1b %<>% estimateSizeFactors
 print(sizeFactors(DESeq2.1b))
-#       D16      D25m      D25p      D25g 
-# 1.4526185 1.0194892 0.9030923 0.7457682
 
 correlation.1b = cor(counts(DESeq2.1b, normalized=T), method="pearson")
 correlation.1b %>% round(2) %>% print
-#       D16 D25m D25p D25g
-# D16  1.00 1.00 0.99 0.95
-# D25m 1.00 1.00 0.99 0.95
-# D25p 0.99 0.99 1.00 0.97
-# D25g 0.95 0.95 0.97 1.00
 
 pheatmap(correlation.1b, cluster_rows=F, cluster_cols=F, border_color="black",
   color=colorRampPalette(c("white", "grey45"))(100), breaks=seq(0.90, 1.00, length.out=100),
@@ -101,7 +92,7 @@ pheatmap(correlation.1b, cluster_rows=F, cluster_cols=F, border_color="black",
 
 Figure 1C
 
-```{r load-1c-data-1, echo=F}
+```{r load-1c-data-1, include=F}
 volcano.input = list(
   fread("internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_NoDox_July2018_All.txt"),
   fread("internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_PlusDox_July2018_All.txt"),
@@ -144,7 +135,7 @@ for (j in 1:length(volcano.input)) {
 
 Figure 1E
 
-```{r load-1e-data-1, echo=F}
+```{r load-1e-data-1, include=F}
 heatmap.input = list(
   read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=1),
   read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=2),
@@ -182,16 +173,9 @@ DESeq2.1e = DESeqDataSetFromMatrix(data.frame(row.names=heatmap.merged.cor$NAME,
 
 DESeq2.1e %<>% estimateSizeFactors
 print(sizeFactors(DESeq2.1e))
-#       D16      D25m      D25p      D25g 
-# 1.0952949 0.9312472 1.1495497 0.8470177
 
 correlation.1e = cor(counts(DESeq2.1e, normalized=T), method="pearson")
 correlation.1e %>% round(2) %>% print
-#       D16 D25m D25p D25g
-# D16  1.00 1.00 0.99 0.87
-# D25m 1.00 1.00 0.99 0.87
-# D25p 0.99 0.99 1.00 0.90
-# D25g 0.87 0.87 0.90 1.00
 
 pheatmap(correlation.1e, cluster_rows=F, cluster_cols=F, border_color="black",
   color=colorRampPalette(c("white", "grey45"))(100), breaks=seq(min(correlation.1e), max(correlation.1e), length.out=100),
@@ -227,36 +211,23 @@ heatmap.1f.right.2$gene = gsub("_.*", "", rownames(heatmap.1f.right.2))
 heatmap.1f.right.2$gene[grep("SafeHarbor", heatmap.1f.right.2$gene)] = "SafeHarbor"
 
 heatmap.1f.right.2[grep("SafeHarbor", rownames(heatmap.1f.right.2)), 1:2] %>% rowSums
-# SafeHarborchr11_38   SafeHarborchr4_9  SafeHarborchr9_18 
-#          0.1588251         -0.3313128         -0.2430640
+
 grep("SafeHarbor", rownames(heatmap.1f.right.2), value=T)[
   heatmap.1f.right.2[grep("SafeHarbor", rownames(heatmap.1f.right.2)), 1:2] %>% rowSums %>% order(decreasing=F)
 ]
-# [1] "SafeHarborchr4_9"   "SafeHarborchr9_18"  "SafeHarborchr11_38"
 
 order.intermediate.1 = aggregate(. ~ gene, data=heatmap.1f.right.2, FUN=function(a) sum(a, na.rm=T))
 order.intermediate.2 = order.intermediate.1$gene[order.intermediate.1[, -1] %>% rowSums %>% order(decreasing=F)]
 order.intermediate.2
-#  [1] "SafeHarbor"                       "TLR4"                            
-#  [3] "BCL2L11"                          "CASP9"                           
-#  [5] "SLC7A11"                          "CASP2"                           
-#  [7] "IL18"                             "NonTargetingControlGuideForHuman"
-#  [9] "TNFRSF11B"                        "BBC3"                            
-# [11] "TP53"
 
 row.order = paste0(rep(order.intermediate.2, each=3), "_", 1:3)
 row.order[1:3] = c("SafeH_chr4_9", "SafeH_chr9_18", "SafeH_chr11_38")
 row.order[22:24] = paste0("NTC", "_", 1:3)
+
 # CASP9_3 showed all zero counts. Removing this row.
 row.order = row.order[-grep("CASP9_3", row.order)]
+
 row.order
-#  [1] "SafeH_chr4_9"   "SafeH_chr9_18"  "SafeH_chr11_38" "TLR4_1"         "TLR4_2"        
-#  [6] "TLR4_3"         "BCL2L11_1"      "BCL2L11_2"      "BCL2L11_3"      "CASP9_1"       
-# [11] "CASP9_2"        "SLC7A11_1"      "SLC7A11_2"      "SLC7A11_3"      "CASP2_1"       
-# [16] "CASP2_2"        "CASP2_3"        "IL18_1"         "IL18_2"         "IL18_3"        
-# [21] "NTC_1"          "NTC_2"          "NTC_3"          "TNFRSF11B_1"    "TNFRSF11B_2"   
-# [26] "TNFRSF11B_3"    "BBC3_1"         "BBC3_2"         "BBC3_3"         "TP53_1"        
-# [31] "TP53_2"         "TP53_3"
 
 # Remove CASP9_3 row
 # Set the names of nontargeting controls the same

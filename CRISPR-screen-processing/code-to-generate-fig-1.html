@@ -384,31 +384,23 @@ median-normalized CRISPR screen counts.</p>
 #   D25g=fread(&quot;column 4.txt&quot;)
 # )
 
-all.equal(large.screen.data$D16$NAME, large.screen.data$D25m$NAME)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code># [1] TRUE
-all.equal(large.screen.data$D16$NAME, large.screen.data$D25p$NAME)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code># [1] TRUE
-all.equal(large.screen.data$D16$NAME, large.screen.data$D25g$NAME)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code># [1] TRUE
-setdiff(large.screen.data$D16$NAME, large.screen.data$D25g$NAME)</code></pre>
-<pre><code>## character(0)</code></pre>
-<pre class="r"><code># character(0)
+all.equal(large.screen.data$D16$NAME, large.screen.data$D25m$NAME)
+# [1] TRUE
+all.equal(large.screen.data$D16$NAME, large.screen.data$D25p$NAME)
+# [1] TRUE
+all.equal(large.screen.data$D16$NAME, large.screen.data$D25g$NAME)
+# [1] TRUE
+setdiff(large.screen.data$D16$NAME, large.screen.data$D25g$NAME)
+# character(0)
 
-all.equal(large.screen.data$D16$SEQ, large.screen.data$D25m$SEQ)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code># [1] TRUE
-all.equal(large.screen.data$D16$SEQ, large.screen.data$D25p$SEQ)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code># [1] TRUE
-all.equal(large.screen.data$D16$SEQ, large.screen.data$D25g$SEQ)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code># [1] &quot;Lengths (540, 545) differ (string compare on first 540)&quot;
-setdiff(large.screen.data$D16$SEQ, large.screen.data$D25g$SEQ)</code></pre>
-<pre><code>## character(0)</code></pre>
-<pre class="r"><code># character(0)</code></pre>
+all.equal(large.screen.data$D16$SEQ, large.screen.data$D25m$SEQ)
+# [1] TRUE
+all.equal(large.screen.data$D16$SEQ, large.screen.data$D25p$SEQ)
+# [1] TRUE
+all.equal(large.screen.data$D16$SEQ, large.screen.data$D25g$SEQ)
+# [1] &quot;Lengths (540, 545) differ (string compare on first 540)&quot;
+setdiff(large.screen.data$D16$SEQ, large.screen.data$D25g$SEQ)
+# character(0)</code></pre>
 <p>Run median normalization and plot Pearson correlation.</p>
 <pre class="r"><code>normalize.1b = list(
   D16=data.frame(NAME=large.screen.data$D16$NAME, D16=large.screen.data$D16[, 7]),
@@ -419,9 +411,7 @@ setdiff(large.screen.data$D16$SEQ, large.screen.data$D25g$SEQ)</code></pre>
 
 library(DESeq2)
 
-prenormalized.1b.df = merge(normalize.1b$D16, normalize.1b$D25m, by=&quot;NAME&quot;)
-prenormalized.1b.df = merge(prenormalized.1b.df, normalize.1b$D25p, by=&quot;NAME&quot;)
-prenormalized.1b.df = merge(prenormalized.1b.df, normalize.1b$D25g, by=&quot;NAME&quot;)
+prenormalized.1b.df = Reduce(function(a, b) merge(a, b, by=&quot;NAME&quot;), normalize.1b)
 
 myColData = DataFrame(row.names=names(normalize.1b), condition=factor(names(normalize.1b)))
 DESeq2.1b = DESeqDataSetFromMatrix(data.frame(row.names=prenormalized.1b.df$NAME, prenormalized.1b.df[, -1]), colData=myColData, design= ~ condition)
@@ -430,23 +420,14 @@ DESeq2.1b %&lt;&gt;% estimateSizeFactors
 print(sizeFactors(DESeq2.1b))</code></pre>
 <pre><code>##       D16      D25m      D25p      D25g 
 ## 1.4526185 1.0194892 0.9030923 0.7457682</code></pre>
-<pre class="r"><code>#       D16      D25m      D25p      D25g 
-# 1.4526185 1.0194892 0.9030923 0.7457682
-
-correlation.1b = cor(counts(DESeq2.1b, normalized=T), method=&quot;pearson&quot;)
+<pre class="r"><code>correlation.1b = cor(counts(DESeq2.1b, normalized=T), method=&quot;pearson&quot;)
 correlation.1b %&gt;% round(2) %&gt;% print</code></pre>
 <pre><code>##       D16 D25m D25p D25g
 ## D16  1.00 1.00 0.99 0.95
 ## D25m 1.00 1.00 0.99 0.95
 ## D25p 0.99 0.99 1.00 0.97
 ## D25g 0.95 0.95 0.97 1.00</code></pre>
-<pre class="r"><code>#       D16 D25m D25p D25g
-# D16  1.00 1.00 0.99 0.95
-# D25m 1.00 1.00 0.99 0.95
-# D25p 0.99 0.99 1.00 0.97
-# D25g 0.95 0.95 0.97 1.00
-
-pheatmap(correlation.1b, cluster_rows=F, cluster_cols=F, border_color=&quot;black&quot;,
+<pre class="r"><code>pheatmap(correlation.1b, cluster_rows=F, cluster_cols=F, border_color=&quot;black&quot;,
   color=colorRampPalette(c(&quot;white&quot;, &quot;grey45&quot;))(100), breaks=seq(0.90, 1.00, length.out=100),
   display_numbers=round(correlation.1b, 2), fontsize_number=10
 )</code></pre>
@@ -511,23 +492,14 @@ DESeq2.1e %&lt;&gt;% estimateSizeFactors
 print(sizeFactors(DESeq2.1e))</code></pre>
 <pre><code>##       D16      D25m      D25p      D25g 
 ## 1.0952949 0.9312472 1.1495497 0.8470177</code></pre>
-<pre class="r"><code>#       D16      D25m      D25p      D25g 
-# 1.0952949 0.9312472 1.1495497 0.8470177
-
-correlation.1e = cor(counts(DESeq2.1e, normalized=T), method=&quot;pearson&quot;)
+<pre class="r"><code>correlation.1e = cor(counts(DESeq2.1e, normalized=T), method=&quot;pearson&quot;)
 correlation.1e %&gt;% round(2) %&gt;% print</code></pre>
 <pre><code>##       D16 D25m D25p D25g
 ## D16  1.00 1.00 0.99 0.87
 ## D25m 1.00 1.00 0.99 0.87
 ## D25p 0.99 0.99 1.00 0.90
 ## D25g 0.87 0.87 0.90 1.00</code></pre>
-<pre class="r"><code>#       D16 D25m D25p D25g
-# D16  1.00 1.00 0.99 0.87
-# D25m 1.00 1.00 0.99 0.87
-# D25p 0.99 0.99 1.00 0.90
-# D25g 0.87 0.87 0.90 1.00
-
-pheatmap(correlation.1e, cluster_rows=F, cluster_cols=F, border_color=&quot;black&quot;,
+<pre class="r"><code>pheatmap(correlation.1e, cluster_rows=F, cluster_cols=F, border_color=&quot;black&quot;,
   color=colorRampPalette(c(&quot;white&quot;, &quot;grey45&quot;))(100), breaks=seq(min(correlation.1e), max(correlation.1e), length.out=100),
   display_numbers=round(correlation.1e, 2), fontsize_number=10
 )</code></pre>
@@ -557,15 +529,11 @@ heatmap.1f.right.2$gene[grep(&quot;SafeHarbor&quot;, heatmap.1f.right.2$gene)] =
 heatmap.1f.right.2[grep(&quot;SafeHarbor&quot;, rownames(heatmap.1f.right.2)), 1:2] %&gt;% rowSums</code></pre>
 <pre><code>## SafeHarborchr11_38   SafeHarborchr4_9  SafeHarborchr9_18 
 ##          0.1588251         -0.3313128         -0.2430640</code></pre>
-<pre class="r"><code># SafeHarborchr11_38   SafeHarborchr4_9  SafeHarborchr9_18 
-#          0.1588251         -0.3313128         -0.2430640
-grep(&quot;SafeHarbor&quot;, rownames(heatmap.1f.right.2), value=T)[
+<pre class="r"><code>grep(&quot;SafeHarbor&quot;, rownames(heatmap.1f.right.2), value=T)[
   heatmap.1f.right.2[grep(&quot;SafeHarbor&quot;, rownames(heatmap.1f.right.2)), 1:2] %&gt;% rowSums %&gt;% order(decreasing=F)
 ]</code></pre>
 <pre><code>## [1] &quot;SafeHarborchr4_9&quot;   &quot;SafeHarborchr9_18&quot;  &quot;SafeHarborchr11_38&quot;</code></pre>
-<pre class="r"><code># [1] &quot;SafeHarborchr4_9&quot;   &quot;SafeHarborchr9_18&quot;  &quot;SafeHarborchr11_38&quot;
-
-order.intermediate.1 = aggregate(. ~ gene, data=heatmap.1f.right.2, FUN=function(a) sum(a, na.rm=T))
+<pre class="r"><code>order.intermediate.1 = aggregate(. ~ gene, data=heatmap.1f.right.2, FUN=function(a) sum(a, na.rm=T))
 order.intermediate.2 = order.intermediate.1$gene[order.intermediate.1[, -1] %&gt;% rowSums %&gt;% order(decreasing=F)]
 order.intermediate.2</code></pre>
 <pre><code>##  [1] &quot;SafeHarbor&quot;                       &quot;TLR4&quot;                            
@@ -574,18 +542,13 @@ order.intermediate.2</code></pre>
 ##  [7] &quot;IL18&quot;                             &quot;NonTargetingControlGuideForHuman&quot;
 ##  [9] &quot;TNFRSF11B&quot;                        &quot;BBC3&quot;                            
 ## [11] &quot;TP53&quot;</code></pre>
-<pre class="r"><code>#  [1] &quot;SafeHarbor&quot;                       &quot;TLR4&quot;                            
-#  [3] &quot;BCL2L11&quot;                          &quot;CASP9&quot;                           
-#  [5] &quot;SLC7A11&quot;                          &quot;CASP2&quot;                           
-#  [7] &quot;IL18&quot;                             &quot;NonTargetingControlGuideForHuman&quot;
-#  [9] &quot;TNFRSF11B&quot;                        &quot;BBC3&quot;                            
-# [11] &quot;TP53&quot;
-
-row.order = paste0(rep(order.intermediate.2, each=3), &quot;_&quot;, 1:3)
+<pre class="r"><code>row.order = paste0(rep(order.intermediate.2, each=3), &quot;_&quot;, 1:3)
 row.order[1:3] = c(&quot;SafeH_chr4_9&quot;, &quot;SafeH_chr9_18&quot;, &quot;SafeH_chr11_38&quot;)
 row.order[22:24] = paste0(&quot;NTC&quot;, &quot;_&quot;, 1:3)
+
 # CASP9_3 showed all zero counts. Removing this row.
 row.order = row.order[-grep(&quot;CASP9_3&quot;, row.order)]
+
 row.order</code></pre>
 <pre><code>##  [1] &quot;SafeH_chr4_9&quot;   &quot;SafeH_chr9_18&quot;  &quot;SafeH_chr11_38&quot; &quot;TLR4_1&quot;        
 ##  [5] &quot;TLR4_2&quot;         &quot;TLR4_3&quot;         &quot;BCL2L11_1&quot;      &quot;BCL2L11_2&quot;     
@@ -595,15 +558,7 @@ row.order</code></pre>
 ## [21] &quot;NTC_1&quot;          &quot;NTC_2&quot;          &quot;NTC_3&quot;          &quot;TNFRSF11B_1&quot;   
 ## [25] &quot;TNFRSF11B_2&quot;    &quot;TNFRSF11B_3&quot;    &quot;BBC3_1&quot;         &quot;BBC3_2&quot;        
 ## [29] &quot;BBC3_3&quot;         &quot;TP53_1&quot;         &quot;TP53_2&quot;         &quot;TP53_3&quot;</code></pre>
-<pre class="r"><code>#  [1] &quot;SafeH_chr4_9&quot;   &quot;SafeH_chr9_18&quot;  &quot;SafeH_chr11_38&quot; &quot;TLR4_1&quot;         &quot;TLR4_2&quot;        
-#  [6] &quot;TLR4_3&quot;         &quot;BCL2L11_1&quot;      &quot;BCL2L11_2&quot;      &quot;BCL2L11_3&quot;      &quot;CASP9_1&quot;       
-# [11] &quot;CASP9_2&quot;        &quot;SLC7A11_1&quot;      &quot;SLC7A11_2&quot;      &quot;SLC7A11_3&quot;      &quot;CASP2_1&quot;       
-# [16] &quot;CASP2_2&quot;        &quot;CASP2_3&quot;        &quot;IL18_1&quot;         &quot;IL18_2&quot;         &quot;IL18_3&quot;        
-# [21] &quot;NTC_1&quot;          &quot;NTC_2&quot;          &quot;NTC_3&quot;          &quot;TNFRSF11B_1&quot;    &quot;TNFRSF11B_2&quot;   
-# [26] &quot;TNFRSF11B_3&quot;    &quot;BBC3_1&quot;         &quot;BBC3_2&quot;         &quot;BBC3_3&quot;         &quot;TP53_1&quot;        
-# [31] &quot;TP53_2&quot;         &quot;TP53_3&quot;
-
-# Remove CASP9_3 row
+<pre class="r"><code># Remove CASP9_3 row
 # Set the names of nontargeting controls the same
 # Order
 heatmap.1f.left.3 = heatmap.1f.left.2[!grepl(&quot;CASP9_3&quot;, rownames(heatmap.1f.left.2)), ]
