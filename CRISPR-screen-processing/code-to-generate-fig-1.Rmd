@@ -4,8 +4,8 @@ author: "Hyunwoo Cho"
 date: "`r Sys.Date()`"
 output: html_document
 ---
-  
-```{r setup, include=FALSE}
+
+```{r setup, include=F}
 knitr::opts_chunk$set(
   warning=F,
   message=F,
@@ -14,26 +14,93 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r load-library-1, include=F}
+```{r load-library-1}
+library(data.table)
+library(openxlsx)
 library(pheatmap)
+library(magrittr)
 ```
 
 Figure 1B
 
-Communicating with Marco for information.
+The panel is based on the matrix of Pearson correlation of the median-normalized CRISPR screen counts.
 
-```{r fig-1b}
-print("fig-1b-here")
+```{r load-fig-1b-1, echo=F}
+large.screen.data = list(
+  D16=read.xlsx("internal-data/220929 large pool gRNA raw and processed.xlsx", sheet=1, rows=1:539),
+  D25m=read.xlsx("internal-data/220929 large pool gRNA raw and processed.xlsx", sheet=2, rows=1:539),
+  D25p=read.xlsx("internal-data/220929 large pool gRNA raw and processed.xlsx", sheet=3, rows=1:539),
+  D25g=read.xlsx("internal-data/220929 large pool gRNA raw and processed.xlsx", sheet=4, rows=1:539)
+)
 ```
 
+```{r fig-1b-1}
+# large.screen.data = list(
+#   D16=fread("column 1.txt"),
+#   D25m=fread("column 2.txt"),
+#   D25p=fread("column 3.txt"),
+#   D25g=fread("column 4.txt")
+# )
 
-```{r load-library-2, include=F}
-library(data.table)
-library(openxlsx)
-library(magrittr)
+all.equal(large.screen.data$D16$NAME, large.screen.data$D25m$NAME)
+# [1] TRUE
+all.equal(large.screen.data$D16$NAME, large.screen.data$D25p$NAME)
+# [1] TRUE
+all.equal(large.screen.data$D16$NAME, large.screen.data$D25g$NAME)
+# [1] TRUE
+setdiff(large.screen.data$D16$NAME, large.screen.data$D25g$NAME)
+# character(0)
+
+all.equal(large.screen.data$D16$SEQ, large.screen.data$D25m$SEQ)
+# [1] TRUE
+all.equal(large.screen.data$D16$SEQ, large.screen.data$D25p$SEQ)
+# [1] TRUE
+all.equal(large.screen.data$D16$SEQ, large.screen.data$D25g$SEQ)
+# [1] "Lengths (540, 545) differ (string compare on first 540)"
+setdiff(large.screen.data$D16$SEQ, large.screen.data$D25g$SEQ)
+# character(0)
+```
+
+Run median normalization and plot Pearson correlation.
+
+```{r fig-1b-2}
+normalize.1b = list(
+  D16=data.frame(NAME=large.screen.data$D16$NAME, D16=large.screen.data$D16[, 7]),
+  D25m=data.frame(NAME=large.screen.data$D25m$NAME, D25m=large.screen.data$D25m[, 7]),
+  D25p=data.frame(NAME=large.screen.data$D25p$NAME, D25p=large.screen.data$D25p[, 7]),
+  D25g=data.frame(NAME=large.screen.data$D25g$NAME, D25g=large.screen.data$D25g[, 7])
+)
+
+library(DESeq2)
+
+prenormalized.1b.df = merge(normalize.1b$D16, normalize.1b$D25m, by="NAME")
+prenormalized.1b.df = merge(prenormalized.1b.df, normalize.1b$D25p, by="NAME")
+prenormalized.1b.df = merge(prenormalized.1b.df, normalize.1b$D25g, by="NAME")
+
+myColData = DataFrame(row.names=names(normalize.1b), condition=factor(names(normalize.1b)))
+DESeq2.1b = DESeqDataSetFromMatrix(data.frame(row.names=prenormalized.1b.df$NAME, prenormalized.1b.df[, -1]), colData=myColData, design= ~ condition)
+
+DESeq2.1b %<>% estimateSizeFactors
+print(sizeFactors(DESeq2.1b))
+#       D16      D25m      D25p      D25g 
+# 1.4526185 1.0194892 0.9030923 0.7457682
+
+correlation.1b = cor(counts(DESeq2.1b, normalized=T), method="pearson")
+correlation.1b %>% round(2) %>% print
+#       D16 D25m D25p D25g
+# D16  1.00 1.00 0.99 0.95
+# D25m 1.00 1.00 0.99 0.95
+# D25p 0.99 0.99 1.00 0.97
+# D25g 0.95 0.95 0.97 1.00
+
+pheatmap(correlation.1b, cluster_rows=F, cluster_cols=F, border_color="black",
+  color=colorRampPalette(c("white", "grey45"))(100), breaks=seq(0.90, 1.00, length.out=100),
+  display_numbers=round(correlation.1b, 2), fontsize_number=10
+)
 ```
 
 Figure 1C
+
 ```{r load-1c-data-1, echo=F}
 volcano.input = list(
   fread("internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_NoDox_July2018_All.txt"),
@@ -76,114 +143,140 @@ for (j in 1:length(volcano.input)) {
 ```
 
 Figure 1E
+
 ```{r load-1e-data-1, echo=F}
 heatmap.input = list(
   read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=1),
   read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=2),
   read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=3),
   read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=4),
-  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=5),
-  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=6)
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=6),
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=5)
 )
+```
+
+```{r fig-1e-1}
+# heatmap.input = list(
+#   D16=fread("1e.1.txt"),
+#   D25m=fread("1e.2.txt"),
+#   D25p=fread("1e.3.txt"),
+#   D25g=fread("1e.4.txt"),
+#   Graft1FC=fread("1f.5.txt"),
+#   Graft2FC=fread("1f.6.txt"),
+# )
 
 heatmap.pre.cor = list(
-  "D16C"=data.frame(NAME=heatmap.input[[1]]$NAME, count1=heatmap.input[[1]][, 5]),
-  "D25Cm"=data.frame(NAME=heatmap.input[[2]]$NAME, count2=heatmap.input[[2]][, 5]),
-  "D25Cp"=data.frame(NAME=heatmap.input[[3]]$NAME, count3=heatmap.input[[3]][, 4]),
-  "D25Gp"=data.frame(NAME=heatmap.input[[4]]$NAME, count4=heatmap.input[[4]][, 5])
+  "D16"=data.frame(NAME=heatmap.input[[1]]$NAME, D16=heatmap.input[[1]][, 5]),
+  "D25m"=data.frame(NAME=heatmap.input[[2]]$NAME, D25m=heatmap.input[[2]][, 5]),
+  "D25p"=data.frame(NAME=heatmap.input[[3]]$NAME, D25p=heatmap.input[[3]][, 4]),
+  "D25g"=data.frame(NAME=heatmap.input[[4]]$NAME, D25g=heatmap.input[[4]][, 5])
 )
 
 heatmap.merged.cor = Reduce(function(a, b) merge(a, b, by="NAME"), heatmap.pre.cor)
 heatmap.merged.cor = heatmap.merged.cor[!grepl("CASP9_3", heatmap.merged.cor$NAME), ]
 
+library(DESeq2)
 
-```
+myColData = DataFrame(row.names=names(heatmap.pre.cor), condition=factor(names(heatmap.pre.cor)))
+DESeq2.1e = DESeqDataSetFromMatrix(data.frame(row.names=heatmap.merged.cor$NAME, heatmap.merged.cor[, -1]), colData=myColData, design= ~ condition)
 
-```{r fig-1e}
-correlation.input = cbind(
-  c(36951, 39522, 53081, 31144, 34112, 39725, 32237, 33085, 58393, 37407, 37208, 33476, 50716, 35569, 36015, 42876, 53956, 43403, 30356, 24336, 39745, 42539, 41750, 43862, 37958, 43898, 38440, 34914, 34998, 31216, 40739, 35959),
-  c(32302, 33600, 45448, 27019, 29319, 33994, 28845, 28476, 49964, 31083, 32011, 27701, 42399, 30426, 30178, 36697, 46241, 37071, 26287, 21439, 33387, 35474, 35225, 37625, 32300, 37593, 32507, 29883, 29088, 27514, 35037, 30480),
-  c(39505, 42912, 55614, 32877, 35649, 42550, 35926, 34921, 61137, 39749, 40631, 34024, 53790, 38863, 37819, 45772, 57047, 45460, 32685, 26226, 40948, 44475, 42848, 45932, 39122, 48940, 41877, 38550, 33626, 34104, 44087, 38012),
-  c(29708, 35816, 44707, 25086, 32981, 38075, 30307, 27999, 44428, 32989, 33348, 28845, 41031, 30768, 30894, 39775, 46344, 35767, 25921, 20947, 29414, 36372, 33206, 37898, 27571, 42330, 31745, 32132, 24182, 26432, 36729, 31750)
+DESeq2.1e %<>% estimateSizeFactors
+print(sizeFactors(DESeq2.1e))
+#       D16      D25m      D25p      D25g 
+# 1.0952949 0.9312472 1.1495497 0.8470177
+
+correlation.1e = cor(counts(DESeq2.1e, normalized=T), method="pearson")
+correlation.1e %>% round(2) %>% print
+#       D16 D25m D25p D25g
+# D16  1.00 1.00 0.99 0.87
+# D25m 1.00 1.00 0.99 0.87
+# D25p 0.99 0.99 1.00 0.90
+# D25g 0.87 0.87 0.90 1.00
+
+pheatmap(correlation.1e, cluster_rows=F, cluster_cols=F, border_color="black",
+  color=colorRampPalette(c("white", "grey45"))(100), breaks=seq(min(correlation.1e), max(correlation.1e), length.out=100),
+  display_numbers=round(correlation.1e, 2), fontsize_number=10
 )
-
-# correlation.output = cor(correlation.input)
-correlation.output = cor(heatmap.merged.cor[, -1])
-colnames(correlation.output) = rownames(correlation.output) = c("D16 C", "-D25 C", "+D25 C", "+D25 G")
-pheatmap(correlation.output, cluster_rows=F, cluster_cols=F, border_color="black",
-  color=colorRampPalette(c("white", "grey45"))(100), breaks=seq(0.90, 1.00, length.out=100),
-  display_numbers=round(correlation.output, 2), fontsize_number=10
-)
-
 ```
 
 Figure 1F
-```{r load-1f-data-1, echo=F}
-# heatmap.input = heatmap.input from figure 1e
 
-heatmap.pre.left = Reduce(function(a, b) merge(a, b, by="NAME"), heatmap.input[1:4])
-heatmap.left = data.frame(
-  row.names=heatmap.pre.left[, 1],
-  "D16.D25m"=heatmap.pre.left[, 9] / heatmap.pre.left[, 5],
-  "D16.D25p"=heatmap.pre.left[, 12] / heatmap.pre.left[, 5],
-  "D25m.D25p"=heatmap.pre.left[, 12] / heatmap.pre.left[, 9]
+```{r load-1f-data-1}
+# heatmap.input = heatmap.input # from figure 1e
+# normalized count from DESeq2.1e is used here too.
+
+heatmap.1f.left.1 = counts(DESeq2.1e, normalized=T)
+heatmap.1f.left.2 = cbind(
+  heatmap.1f.left.1[, 2] / heatmap.1f.left.1[, 1],
+  heatmap.1f.left.1[, 3] / heatmap.1f.left.1[, 1],
+  heatmap.1f.left.1[, 3] / heatmap.1f.left.1[, 2]
 ) %>% log2
 
-heatmap.pre.right = Reduce(function(a, b) merge(a, b, by="NAME"), heatmap.input[5:6])
-heatmap.right = data.frame(
-  row.names=heatmap.pre.right[, 1],
-  "Small.pool.1"=heatmap.pre.right[, 5],
-  "Small.pool.2"=heatmap.pre.right[, 2]
+heatmap.1f.right.1 = Reduce(function(a, b) merge(a, b, by="NAME"), heatmap.input[5:6])
+heatmap.1f.right.2 = data.frame(
+  row.names=heatmap.1f.right.1[, 1],
+  "Small.pool.1"=heatmap.1f.right.1[, 2],
+  "Small.pool.2"=heatmap.1f.right.1[, 6]
 ) %>% log2
 ```
 
+Order the genes by the averaged fold change order of the right panel. In each gene, sgRNAs will be ordered alphabetically.
+
 ```{r fig-1f}
-# heatmap.pre.left = fread("heatmap.pre.left.txt")
-# heatmap.pre.right = fread("heatmap.pre.right.txt")
+heatmap.1f.right.2$gene = gsub("_.*", "", rownames(heatmap.1f.right.2))
+heatmap.1f.right.2$gene[grep("SafeHarbor", heatmap.1f.right.2$gene)] = "SafeHarbor"
 
-row.order = c(
-  paste0("BCL2L11_", 1:3),
-  paste0("CASP2_", 1:3),
-  paste0("CASP9_", 1:2),
-  "SafeHarborchr11_38", "SafeHarborchr4_9", "SafeHarborchr9_18",
-  paste0("SLC7A11_", 1:3),
-  paste0("TLR4_", 1:3),
-  paste0("TNFRSF11B_", 1:3),
-  paste0("IL18_", 1:3),
-  paste0("NTC_", 1:3),
-  paste0("BBC3_", 1:3),
-  paste0("TP53_", 1:3)
-)
+heatmap.1f.right.2[grep("SafeHarbor", rownames(heatmap.1f.right.2)), 1:2] %>% rowSums
+# SafeHarborchr11_38   SafeHarborchr4_9  SafeHarborchr9_18 
+#          0.1588251         -0.3313128         -0.2430640
+grep("SafeHarbor", rownames(heatmap.1f.right.2), value=T)[
+  heatmap.1f.right.2[grep("SafeHarbor", rownames(heatmap.1f.right.2)), 1:2] %>% rowSums %>% order(decreasing=F)
+]
+# [1] "SafeHarborchr4_9"   "SafeHarborchr9_18"  "SafeHarborchr11_38"
 
-heatmap.left = heatmap.left[!grepl("CASP9_3", heatmap.pre.left[, 1]), ]
-rownames(heatmap.left)[grep("NonTargetingControl", rownames(heatmap.left))] = paste0("NTC_", 1:3)
-heatmap.left = heatmap.left[row.order, ]
+order.intermediate.1 = aggregate(. ~ gene, data=heatmap.1f.right.2, FUN=function(a) sum(a, na.rm=T))
+order.intermediate.2 = order.intermediate.1$gene[order.intermediate.1[, -1] %>% rowSums %>% order(decreasing=F)]
+order.intermediate.2
+#  [1] "SafeHarbor"                       "TLR4"                            
+#  [3] "BCL2L11"                          "CASP9"                           
+#  [5] "SLC7A11"                          "CASP2"                           
+#  [7] "IL18"                             "NonTargetingControlGuideForHuman"
+#  [9] "TNFRSF11B"                        "BBC3"                            
+# [11] "TP53"
 
-heatmap.right = heatmap.right[!grepl("CASP9_3", heatmap.pre.right[, 1]), ]
-rownames(heatmap.right)[grep("NonTargetingControl", rownames(heatmap.right))] = paste0("NTC_", 1:3)
-heatmap.right = heatmap.right[row.order, ]
+row.order = paste0(rep(order.intermediate.2, each=3), "_", 1:3)
+row.order[1:3] = c("SafeH_chr4_9", "SafeH_chr9_18", "SafeH_chr11_38")
+row.order[22:24] = paste0("NTC", "_", 1:3)
+# CASP9_3 showed all zero counts. Removing this row.
+row.order = row.order[-grep("CASP9_3", row.order)]
+row.order
+#  [1] "SafeH_chr4_9"   "SafeH_chr9_18"  "SafeH_chr11_38" "TLR4_1"         "TLR4_2"        
+#  [6] "TLR4_3"         "BCL2L11_1"      "BCL2L11_2"      "BCL2L11_3"      "CASP9_1"       
+# [11] "CASP9_2"        "SLC7A11_1"      "SLC7A11_2"      "SLC7A11_3"      "CASP2_1"       
+# [16] "CASP2_2"        "CASP2_3"        "IL18_1"         "IL18_2"         "IL18_3"        
+# [21] "NTC_1"          "NTC_2"          "NTC_3"          "TNFRSF11B_1"    "TNFRSF11B_2"   
+# [26] "TNFRSF11B_3"    "BBC3_1"         "BBC3_2"         "BBC3_3"         "TP53_1"        
+# [31] "TP53_2"         "TP53_3"
 
-# heatmap.input = cbind(
-#   c(-0.0165782, -0.0047367, -0.0090594, -0.0036821, -0.0100582, -0.0015941, 0.00204447, 0.00535296, -0.0166796, -0.0063498, -0.0119492, -0.0014037, -0.0130518, -0.0040778, -0.0140498, -0.0039513, 0.00892923, -0.0038289, -0.0017354, 0.00869498, -0.0032629, -0.0185003, -0.0080443, -0.0038401, 0.00124816, -0.0151339, 0.01545386, -0.0020138, -0.0028616, -0.0035868, -0.0039058, -0.0067485),
-#   c(-0.0437371, -0.0062643, 0.01081928, -0.0061276, -0.0151058, 0.01185327, -0.0028545, 0.00264918, 0, -0.0132574, -0.0134188, -0.0029211, -0.0051474, 0.01209403, -0.0008212, -0.0064227, 0.01205981, 0.01664639, 0.00793326, 0.00611238, -0.0021838, -0.019319, -0.0022611, 0.00200725, 0.00573075, -0.0070468, 0.02067808, -0.0072382, -0.006352, 0.02084439, 0.00346889, 0.00937137),
-#   c(-0.0271589, -0.0015276, 0.0198787, -0.0024455, -0.0050476, 0.01344736, -0.004899, -0.0027038, 0.01667964, -0.0069076, -0.0014696, -0.0015174, 0.00790444, 0.0161718, 0.01322858, -0.0024714, 0.003130580, 0.02047526, 0.00966864, -0.0025826, 0.00107903, -0.0008187, 0.00578325, 0.00584734, 0.00448259, 0.00808715, 0.00522422, -0.0052244, -0.0034904, 0.02443118, 0.00737465, 0.01611988),
-#   c(-0.0360795, 0.00646372, -0.0154228, 0.01124101, -0.0149436, 0.03837116, 0.00719857, -0.0171693, 0.03909726, -0.0439681, -0.0794048, 0.01455659, -0.0031395, 0.01606358, -0.0125673, -0.0420127, -0.0069415, 0.0378287, 0.02503672, 0.02967342, 0.00788701, 0.02511509, 0.00476449, 0.05886714, -0.0031584, 0.01336897, 0.08854081, 0.02170257, 0.04423226, 0.04736031, 0.07578284, 0.02732082),
-#   c(-0.0778676, -0.0048161, 0.00719522, 0.00601926, -0.002289, -0.0182418, -0.0244228, 0, 0.00871386, -0.0557669, 0.00623524, 0.00109481, -0.0040742, -0.0173248, -0.0150332, -0.037252, -0.0080152, 0.01270147, 0.01299241, -0.0101972, 0.01642426, 0.01463421, 0.02069699, 0.0004051, 0.02621258, 0.00971823, 0.04225707, 0.03442039, 0.01336859, 0.080958, 0.08035364, 0.03470606)
-# )
+# Remove CASP9_3 row
+# Set the names of nontargeting controls the same
+# Order
+heatmap.1f.left.3 = heatmap.1f.left.2[!grepl("CASP9_3", rownames(heatmap.1f.left.2)), ]
+rownames(heatmap.1f.left.3)[grep("NonTargetingControl", rownames(heatmap.1f.left.3))] = paste0("NTC_", 1:3)
+rownames(heatmap.1f.left.3)[grep("SafeHarbor", rownames(heatmap.1f.left.3))] = paste0("SafeH_", c("chr11_38", "chr4_9", "chr9_18"))
+heatmap.1f.left.3 = heatmap.1f.left.3[row.order, ]
 
-# pheatmap(heatmap.input[, 1:3], cluster_rows=F, cluster_cols=F, border_color=NA,
-#   color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
-# )
-# pheatmap(heatmap.input[, 4:5], cluster_rows=F, cluster_cols=F, border_color=NA,
-#   color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
-# )
+heatmap.1f.right.3 = heatmap.1f.right.2[!grepl("CASP9_3", rownames(heatmap.1f.right.2)), ]
+rownames(heatmap.1f.right.3)[grep("NonTargetingControl", rownames(heatmap.1f.right.3))] = paste0("NTC_", 1:3)
+rownames(heatmap.1f.right.3)[grep("SafeHarbor", rownames(heatmap.1f.right.3))] = paste0("SafeH_", c("chr11_38", "chr4_9", "chr9_18"))
+heatmap.1f.right.3 = heatmap.1f.right.3[row.order, ]
 
-pheatmap(heatmap.left, cluster_rows=F, cluster_cols=F, border_color=NA,
+pheatmap(heatmap.1f.left.3, cluster_rows=F, cluster_cols=F, border_color=NA,
   show_rownames=T, show_colnames=F,
-  color=colorRampPalette(c("blue", "white", "red"))(100)# , breaks=seq(-0.30, +0.30, length.out=100)
+  color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
 )
-pheatmap(heatmap.right, cluster_rows=F, cluster_cols=F, border_color=NA,
+pheatmap(heatmap.1f.right.3[, 1:2], cluster_rows=F, cluster_cols=F, border_color=NA,
   show_rownames=T, show_colnames=F,
-  color=colorRampPalette(c("blue", "white", "red"))(100)# , breaks=seq(-0.30, +0.30, length.out=100)
+  color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
 )
 ```
