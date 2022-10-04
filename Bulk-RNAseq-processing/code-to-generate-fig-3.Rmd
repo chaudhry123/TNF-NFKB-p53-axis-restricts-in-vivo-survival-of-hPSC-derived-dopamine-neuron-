@@ -127,8 +127,11 @@ d24d8c218f8f2d486ca771d5df4e4198  Proj_11351_C_s_E223D1GRAFTP53WT1-htseq-count-m
 0b8ab35617d9cb5ddea79e6e37e2acda  Proj_11351_C_s_E223D1GRAFTP53WT2-htseq-count-matrix.txt
 ```
 
-```{r load-1, include=F}
-library(data.table); library(rtracklayer); library(DESeq2); library(magrittr)
+```{r load-1}
+library(data.table)
+library(rtracklayer)
+library(DESeq2)
+library(magrittr)
 ```
 
 Load the gene quantification results and make a `DESeq2` object.
@@ -146,12 +149,13 @@ DESeq2Obj.vst = varianceStabilizingTransformation(DESeq2Obj)
 dim(DESeq2Obj)
 ```
 
-Figure 3A
+### Figure 3A
 
 ```{r pca-1}
 p1 = plotPCA(DESeq2Obj.vst, ntop=3000, intgroup="condition", returnData=T)
 
-library(ggplot2); library(ggrepel)
+library(ggplot2)
+library(ggrepel)
 percentVar = round(100 * attr(p1, "percentVar"))
 ggplot() + geom_point(data=p1, aes(PC1, PC2, color=condition), size=4.0) +
   xlab(paste0("PC1: ", percentVar[1], "%")) + ylab(paste0("PC2: ", percentVar[2], "%")) + coord_fixed() +
@@ -159,23 +163,27 @@ ggplot() + geom_point(data=p1, aes(PC1, PC2, color=condition), size=4.0) +
   geom_text_repel(data=p1, aes(PC1, PC2, label=row.names(p1)), size=3, max.overlaps=30, segment.alpha=0.1, box.padding=0.2, point.padding=0.20)
 ```
 
+Note that the ellipses in the paper were added manually.
+
 ```{r pc-coordinates-1}
 p1
 ```
 
-Note that the ellipses in the paper were added manually.
-
-Figure S5A
+### Figure S5A
 
 ```{r pca-2}
 ntop.3000.selector = rowVars(assay(DESeq2Obj.vst)) %>% order(decreasing=T) %>% head(3000)
-library(NMF); library(amap)
+
+library(NMF)
+library(amap)
+
 row.hclust = hcluster(dist(t(assay(DESeq2Obj.vst)[ntop.3000.selector, ])), method="euclidean", link="single")
 row.hclust.d = as.dendrogram(row.hclust)
 labels(row.hclust.d)
 
 # normalized DESeq2 counts, log2 transform, top 3000 genes, correlation metric, ward linkage
 row.hclust.all = hcluster(dist(t(log2(counts(DESeq2Obj, normalized=T) + 1)[ntop.3000.selector, ])), method="correlation", link="ward")
+
 library(dendextend)
 row.hclust.all.d = as.dendrogram(row.hclust.all)
 row.hclust.all.d = row.hclust.all.d %>% set("labels", c("Day 1 Culture replicate 1", "Day 1 Culture replicate 2", "Day 0 replicate 1", "Day 0 replicate 2", "Day 1 Graft replicate 1", "Day 1 Graft replicate 2")) %>% set("leaves_pch", 19) %>% set("leaves_cex", 1.5) %>% set("leaves_col", c("green", "green", "red", "red", "blue", "blue"))
@@ -183,7 +191,7 @@ par(mar=c(0.6, 0.6, 0.6, 10.1))
 plot(row.hclust.all.d, sub="", xlab="", yaxt="n", horiz=T)
 ```
 
-Figure 3B
+### Figure 3B
 ```{r ma-plot-1}
 diffExprLst.list = list(
   D0.D1Culture=results(DESeq2Obj, contrast=c("condition", "D1Culture", "D0"), alpha=0.05),
@@ -194,35 +202,160 @@ for (j in 1:length(diffExprLst.list)) {
   diffExprLst.list[[j]]$padj[is.na(diffExprLst.list[[j]]$padj)] = 1.0
 }
 
-plotMA(diffExprLst.list[[3]], alpha=0.05, main="D1 Culture to D1 Graft", sub="Q value 0.05", xlab="", ylim=c(-6.0, +6.0), ylab="log2 fold change", cex.axis=0.80)
+p1 = plotMA(diffExprLst.list[[3]], alpha=0.05, returnData=T)
+plotMA(diffExprLst.list[[3]], alpha=0.05, main="D1 graft vs D1 culture", sub="Q value 0.05", xlab="", ylim=c(-6.0, +6.0), ylab="log2-fold change", cex.axis=0.80, colSig=NA)
+points(pmin(lfc, +6.0) ~ mean, data=subset(p1, isDE & lfc > 0), col="red", pch=ifelse(lfc >= +6.0, 2, 20), cex=0.45)
+points(pmax(lfc, -6.0) ~ mean, data=subset(p1, isDE & lfc < 0), col="blue", pch=ifelse(lfc <= -6.0, 6, 20), cex=0.45)
 title(xlab="mean of normalized counts", cex.lab=0.80)
 legend("topright", inset=c(0, 0), legend=sum(diffExprLst.list[[3]]$padj <= 0.05 & diffExprLst.list[[3]]$log2FoldChange >= 0), bty="n", cex=1.30, text.col="red")
 legend("bottomright", inset=c(0, 0), legend=sum(diffExprLst.list[[3]]$padj <= 0.05 & diffExprLst.list[[3]]$log2FoldChange < 0), bty="n", cex=1.30, text.col="blue")
 ```
 
-Figure 3C
+### Figure 3C
+hallmark markers dotplot on D1 culture -> D1 graft, significantly up
+```{r hallmark-dotplot-1}
+library(msigdbr)
+# The latest version of CRAN's msigdbr is 7.5.1.
+packageVersion("msigdbr")
 
-Figure S5B
+h_gene_sets = msigdbr(species="human", category="H")
+h_gene_sets$gs_name = gsub("^HALLMARK_", "", h_gene_sets$gs_name)
 
-Figure S5C
+library(dplyr)
+library(clusterProfiler)
+msigdbr_t2g = h_gene_sets %>% dplyr::distinct(gs_name, gene_symbol) %>% as.data.frame()
+hallmark.df.3.up = enricher(gene=rownames(subset(diffExprLst.list[[3]], log2FoldChange >= 0 & padj <= 0.05)), TERM2GENE=msigdbr_t2g)
 
-Figure 3D
+dotplot(hallmark.df.3.up, showCategory=30) + theme_classic()
+```
 
-Figure 3E
+### Figure S5B
+hallmark markers dotplot on D1 culture -> D1 graft, significantly down
+```{r go-dotplot-1}
+hallmark.df.3.down = enricher(gene=rownames(subset(diffExprLst.list[[3]], log2FoldChange < 0 & padj <= 0.05)), TERM2GENE=msigdbr_t2g)
 
-Figure S5H
+dotplot(hallmark.df.3.down, showCategory=30) + theme_classic()
+```
+
+### Figure S5C
+Heat map of GO terms belonging in the GO term (response to tumor necrosis factor)
+```{r heatmap-1}
+go.term = "GO:0034612" # (response to tumor necrosis factor)
+
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+# The latest version of org.Hs.eg.db is 3.15.
+# The publication used version 3.13 of org.Hs.eg.db.
+packageVersion("org.Hs.eg.db")
+
+go_allegs_object = as.list(org.Hs.egGO2ALLEGS)
+# Difference between org.Hs.egGO2EG and org.Hs.eg.GO2ALLEGS
+# ALLEGS finds genes that are associated up to child nodes.
+
+entrez.fig.s5c = go_allegs_object$`GO:0034612` %>% unique
+symbols.figs.s5c = AnnotationDbi::select(org.Hs.eg.db, keys=entrez.fig.s5c, columns=c("ENTREZID", "SYMBOL"), keytype="ENTREZID")
+length(symbols.figs.s5c$SYMBOL)
+
+library(pheatmap)
+
+heatmap.input.withvar = assay(DESeq2Obj.vst)[rowVars(counts(DESeq2Obj)) > 0, ]
+heatmap.gsea.withvar.1 = pheatmap:::scale_rows(heatmap.input.withvar[rownames(heatmap.input.withvar) %in% symbols.figs.s5c$SYMBOL, ] %>% as.matrix)
+
+# Placed some cutoff on gene expression, on day 1 graft replicates 1 and 2.
+gsea.56up.genes.list = rownames(heatmap.gsea.withvar.1[heatmap.gsea.withvar.1[, 5] >= 0.3 & heatmap.gsea.withvar.1[, 6] >= 0.3, ])
+
+pheatmap(heatmap.input.withvar[rownames(heatmap.input.withvar) %in% (gsea.56up.genes.list %>% unique), ] %>% as.matrix, scale="row", main="GO:0034612 (response to tumor necrosis factor)", color=colorRampPalette(c("blue", "white", "red"))(100), cluster_rows=T, cluster_distance_rows="euclidean", cluster_cols=F, show_rownames=T, fontsize=7)
+```
+
+### Figure 3D
+GSEA using gseaplot2 of enrichplot
+
+This part is not reproducible. Especially the P value part. Saving the result is recommended.
+```{r gseaplot2-1, cache=T}
+# GSEA using gseaplot2
+gene.list.for.gsea = diffExprLst.list[[3]]$log2FoldChange
+names(gene.list.for.gsea) = rownames(diffExprLst.list[[3]])
+gene.list.for.gsea = na.omit(gene.list.for.gsea)
+gene.list.for.gsea = sort(gene.list.for.gsea, decreasing=T)
+
+gse = gseGO(gene.list.for.gsea, OrgDb=org.Hs.eg.db, keyType="SYMBOL", ont="BP", pvalueCutoff=1.0)
+# this part is not reproducible. Saving the result is recommended.
+dim(gse)
+
+# GSEA plot using gseaplot2
+j = grep("tumor necro", gse$Description)[gse[grep("tumor necro", gse$Description), ]$p.adjust %>% which.min]
+message(j)
+
+gse[j, c("ID", "Description", "NES", "p.adjust")]
+
+library(enrichplot)
+gseaplot2(gse, title=gse$Description[j], geneSetID=j)
+```
+
+### Figure 3E
+Plot of GSEA normalized enrichment scores, sorted in decreasing order
+```{r load-nes-data-1, include=F}
+library(openxlsx)
+gse.ordered = read.xlsx("internal-data/GSEA.1c1g.ranked.by.NES.6181.terms.20211122_highlight.xlsx")
+```
+
+```{r nes-order-plot-1}
+library(openxlsx)
+# gse.ordered = read.delim("GSEA.ordered.txt")
+all.equal(gse.ordered$NES, gse.ordered$NES %>% sort(decreasing=T))
+
+# New criterion here: top 500. It is justified because the following edge (rank 1401 - 1500) has NES around 1.1 or 1.2, low.
+gse.ordered.1 = gse.ordered[1:500, ]
+dim(gse.ordered.1)
+
+all.equal(gse.ordered.1$NES, gse.ordered$NES[1:500])
+all.equal(gse.ordered.1$NES, gse.ordered.1$NES %>% sort(decreasing=T))
+
+nes.annotated = read.xlsx("GSEA rank plot  FINAL list.xlsx", sheet=1, colNames=F)
+nes.annotated$X2 %in% gse.ordered.1$ID %>% all
+
+gse.ordered.1$color.selector = ifelse(gse.ordered.1$ID %in% nes.annotated$X2, "pass", "nopass")
+gse.ordered.1$rankx = 1:NROW(gse.ordered.1)
+gse.ordered.1$Legend = "nopass"
+gse.ordered.1$Legend[gse.ordered.1$ID %in% nes.annotated[1:6, ]$X2] = "TNF alpha"
+gse.ordered.1$Legend[gse.ordered.1$ID %in% nes.annotated[7:12, ]$X2] = "Apoptosis"
+gse.ordered.1$Legend[gse.ordered.1$ID %in% nes.annotated[13:16, ]$X2] = "P53"
+gse.ordered.1$pointsize = ifelse(gse.ordered.1$Legend == "nopass", 3, 8)
+
+gse.ordered.1 = gse.ordered.1[order(gse.ordered.1$color.selector), ]
+# Alphabetical order. The order is "nopass" then "pass", which is what we want.
+
+gse.ordered.1$Legend %>% table
+
+# The highlighted GO terms, manually curated
+highlighted.gsea = list(
+  `TNF alpha`=nes.annotated[1:6, 2:3],
+  `Apoptosis`=nes.annotated[7:12, 2:3],
+  `P53`=nes.annotated[13:16, 2:3]
+)
+highlighted.gsea
+
+# Add "GO: " before the term names
+gse.ordered.1$Description = paste0("GO: ", gse.ordered.1$Description)
+
+nes.1 = ggplot() + geom_point(data=gse.ordered.1, aes(rankx, abs(NES), fill=Legend, size=pointsize), shape=21, color=rgb(0, 0, 0, 0.10), show.legend=F) + scale_size_identity() + labs(x="Rank", y="Absolute value of GSEA NES") + scale_fill_manual(values=c("TNF alpha"="red", "Apoptosis"="saddlebrown", "P53"="purple", "nopass"=rgb(0, 0, 0, 0.10))) + theme_classic() + theme(plot.title=element_text(hjust=0.5)) + geom_text_repel(data=subset(gse.ordered.1, Legend != "nopass"), aes(rankx, abs(NES), label=subset(gse.ordered.1, Legend != "nopass")$Description, color=Legend), key_glyph="rect", size=4, max.overlaps=100, segment.alpha=0.2, box.padding=0.4, point.padding=1, force=2000, max.iter=3000000) + scale_color_manual(values=c("TNF alpha"="red", "Apoptosis"="saddlebrown", "P53"="purple"))
+
+nes.1
+```
+
+### Figure S5H
 ```{r plotcounts-1}
 p.h1 = plotCounts(DESeq2Obj, gene="TNFSF10", intgroup="condition", returnData=T)
 p.h2 = plotCounts(DESeq2Obj, gene="TNFSF12", intgroup="condition", returnData=T)
 p.h.combine = data.frame(rbind(p.h1, p.h2), gene=rep(c("TNFSF10", "TNFSF12"), each=6))
 p.h.combine$x = paste0(p.h.combine$gene, ".", p.h.combine$condition)
 
-library(ggplot2); library(ggpubr)
-ggplot(data=p.h.combine) + geom_point(aes(x, count, color=gene)) + scale_color_manual(values=c("TNFSF10"="#F7989B", "TNFSF12"="#FFD479")) + coord_trans(y="log2") + scale_x_discrete(labels=rep(c("D0", "D1 in vitro", "D1 in vivo"), 2)) + xlab("") + ylab("DESeq2 normalized counts") + theme_bw() + rotate_x_text(angle=30)
-# 
+p.h.average = aggregate(count ~ x, data=p.h.combine, FUN=mean, na.rm=T)
+p.h.average$Gene = factor(rep(c("TNFSF10", "TNFSF12"), each=3))
+
+library(ggplot2)
+library(ggpubr)
+
+ggplot() + geom_bar(data=p.h.average, aes(x, count, fill=Gene), stat="identity") + scale_fill_manual(values=c("TNFSF10"="#F7989B", "TNFSF12"="#FFD479")) + geom_point(data=p.h.combine, aes(x, count), color="black") + scale_x_discrete(labels=rep(c("D0", "D1 in vitro", "D1 in vivo"), 2)) + xlab("") + ylab("DESeq2 normalized counts") + theme_classic() + rotate_x_text(angle=30)
 ```
-
-
-
-
 
