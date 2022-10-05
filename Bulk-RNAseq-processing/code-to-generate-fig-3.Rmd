@@ -356,6 +356,6 @@ p.h.average$Gene = factor(rep(c("TNFSF10", "TNFSF12"), each=3))
 library(ggplot2)
 library(ggpubr)
 
-ggplot() + geom_bar(data=p.h.average, aes(x, count, fill=Gene), stat="identity") + scale_fill_manual(values=c("TNFSF10"="#F7989B", "TNFSF12"="#FFD479")) + geom_point(data=p.h.combine, aes(x, count), color="black") + scale_x_discrete(labels=rep(c("D0", "D1 in vitro", "D1 in vivo"), 2)) + xlab("") + ylab("DESeq2 normalized counts") + theme_classic() + rotate_x_text(angle=30)
+ggplot() + geom_bar(data=p.h.average, aes(x, count, fill=Gene), stat="identity") + scale_fill_manual(values=c("TNFSF10"="#F7989B", "TNFSF12"="#FFD479")) + geom_point(data=p.h.combine, aes(x, count), color="black") + scale_x_discrete(labels=rep(c("D0", "D1 in vitro", "D1 in vivo"), 2)) + xlab("") + ylab("DESeq2 normalized counts") + theme_classic() + theme(legend.position=c(0.20, 0.75)) + rotate_x_text(angle=30)
 ```
 

@@ -189,40 +189,54 @@ Figure 1F
 # heatmap.input = heatmap.input # from figure 1e
 # normalized count from DESeq2.1e is used here too.
 
-heatmap.1f.left.1 = counts(DESeq2.1e, normalized=T)
-heatmap.1f.left.2 = cbind(
-  heatmap.1f.left.1[, 2] / heatmap.1f.left.1[, 1],
-  heatmap.1f.left.1[, 3] / heatmap.1f.left.1[, 1],
-  heatmap.1f.left.1[, 3] / heatmap.1f.left.1[, 2]
-) %>% log2
+heatmap.1f.1 = counts(DESeq2.1e, normalized=T)
+heatmap.1f.2 = data.frame(cbind(
+  heatmap.1f.1[, 2] / heatmap.1f.1[, 1],
+  heatmap.1f.1[, 3] / heatmap.1f.1[, 1],
+  heatmap.1f.1[, 3] / heatmap.1f.1[, 2],
+  heatmap.1f.1[, 4] / heatmap.1f.1[, 3]
+) %>% log2)
 
-heatmap.1f.right.1 = Reduce(function(a, b) merge(a, b, by="NAME"), heatmap.input[5:6])
-heatmap.1f.right.2 = data.frame(
-  row.names=heatmap.1f.right.1[, 1],
-  "Small.pool.1"=heatmap.1f.right.1[, 2],
-  "Small.pool.2"=heatmap.1f.right.1[, 6]
-) %>% log2
+# heatmap.1f.left.1 = counts(DESeq2.1e, normalized=T)
+# heatmap.1f.left.2 = cbind(
+#   heatmap.1f.left.1[, 2] / heatmap.1f.left.1[, 1],
+#   heatmap.1f.left.1[, 3] / heatmap.1f.left.1[, 1],
+#   heatmap.1f.left.1[, 3] / heatmap.1f.left.1[, 2]
+# ) %>% log2
+
+# heatmap.1f.right.1 = Reduce(function(a, b) merge(a, b, by="NAME"), heatmap.input[5:6])
+# heatmap.1f.right.2 = data.frame(
+#   row.names=heatmap.1f.right.1[, 1],
+#   "Small.pool.1"=heatmap.1f.right.1[, 2],
+#   "Small.pool.2"=heatmap.1f.right.1[, 6]
+# ) %>% log2
 ```
 
 Order the genes by the averaged fold change order of the right panel. In each gene, sgRNAs will be ordered alphabetically.
 
 ```{r fig-1f}
-heatmap.1f.right.2$gene = gsub("_.*", "", rownames(heatmap.1f.right.2))
-heatmap.1f.right.2$gene[grep("SafeHarbor", heatmap.1f.right.2$gene)] = "SafeHarbor"
+heatmap.1f.2$gene = gsub("_.*", "", rownames(heatmap.1f.2))
+heatmap.1f.2$gene[grep("SafeHarbor", heatmap.1f.2$gene)] = "SafeHarbor"
 
-heatmap.1f.right.2[grep("SafeHarbor", rownames(heatmap.1f.right.2)), 1:2] %>% rowSums
+heatmap.1f.2[grep("SafeHarbor", rownames(heatmap.1f.2)), 4]
 
-grep("SafeHarbor", rownames(heatmap.1f.right.2), value=T)[
-  heatmap.1f.right.2[grep("SafeHarbor", rownames(heatmap.1f.right.2)), 1:2] %>% rowSums %>% order(decreasing=F)
+safeharbor.orders = grep("SafeHarbor", rownames(heatmap.1f.2), value=T)[
+  heatmap.1f.2[grep("SafeHarbor", rownames(heatmap.1f.2)), 4] %>% order(decreasing=F)
 ]
 
-order.intermediate.1 = aggregate(. ~ gene, data=heatmap.1f.right.2, FUN=function(a) sum(a, na.rm=T))
-order.intermediate.2 = order.intermediate.1$gene[order.intermediate.1[, -1] %>% rowSums %>% order(decreasing=F)]
+heatmap.1f.2[grep("NonTargetingControl", rownames(heatmap.1f.2)), 4]
+
+ntc.orders = grep("NonTargetingControl", rownames(heatmap.1f.2), value=T)[
+  heatmap.1f.2[grep("NonTargetingControl", rownames(heatmap.1f.2)), 4] %>% order(decreasing=F)
+]
+
+order.intermediate.1 = aggregate(. ~ gene, data=heatmap.1f.2[, c("X4", "gene")], FUN=function(a) sum(a, na.rm=T))
+order.intermediate.2 = order.intermediate.1$gene[order.intermediate.1[, -1] %>% order(decreasing=F)]
 order.intermediate.2
 
 row.order = paste0(rep(order.intermediate.2, each=3), "_", 1:3)
-row.order[1:3] = c("SafeH_chr4_9", "SafeH_chr9_18", "SafeH_chr11_38")
-row.order[22:24] = paste0("NTC", "_", 1:3)
+row.order[grep("SafeHarbor", row.order)] = safeharbor.orders
+row.order[grep("NonTargetingControl", row.order)] = ntc.orders
 
 # CASP9_3 showed all zero counts. Removing this row.
 row.order = row.order[-grep("CASP9_3", row.order)]
@@ -232,22 +246,39 @@ row.order
 # Remove CASP9_3 row
 # Set the names of nontargeting controls the same
 # Order
-heatmap.1f.left.3 = heatmap.1f.left.2[!grepl("CASP9_3", rownames(heatmap.1f.left.2)), ]
-rownames(heatmap.1f.left.3)[grep("NonTargetingControl", rownames(heatmap.1f.left.3))] = paste0("NTC_", 1:3)
-rownames(heatmap.1f.left.3)[grep("SafeHarbor", rownames(heatmap.1f.left.3))] = paste0("SafeH_", c("chr11_38", "chr4_9", "chr9_18"))
-heatmap.1f.left.3 = heatmap.1f.left.3[row.order, ]
 
-heatmap.1f.right.3 = heatmap.1f.right.2[!grepl("CASP9_3", rownames(heatmap.1f.right.2)), ]
-rownames(heatmap.1f.right.3)[grep("NonTargetingControl", rownames(heatmap.1f.right.3))] = paste0("NTC_", 1:3)
-rownames(heatmap.1f.right.3)[grep("SafeHarbor", rownames(heatmap.1f.right.3))] = paste0("SafeH_", c("chr11_38", "chr4_9", "chr9_18"))
-heatmap.1f.right.3 = heatmap.1f.right.3[row.order, ]
+heatmap.1f.3 = heatmap.1f.2[!grepl("CASP9_3", rownames(heatmap.1f.2)), 1:4]
+heatmap.1f.3 = heatmap.1f.3[row.order, ]
+rownames(heatmap.1f.3)[grep("SafeHarbor", rownames(heatmap.1f.3))] = gsub("SafeHarbor", "SafeH_", safeharbor.orders)
+rownames(heatmap.1f.3)[grep("NonTargetingControl", rownames(heatmap.1f.3))] = paste0("NTC_", 1:3)
 
-pheatmap(heatmap.1f.left.3, cluster_rows=F, cluster_cols=F, border_color=NA,
+library(classInt)
+heatmapbreaks.1 = classIntervals(heatmap.1f.3[, 4], n=NROW(heatmap.1f.3), style="quantile")
+
+pheatmap(heatmap.1f.3, cluster_rows=F, cluster_cols=F, border_color=NA,
   show_rownames=T, show_colnames=F,
-  color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
+  color=colorRampPalette(c("blue", "white", "red"))(NROW(heatmap.1f.3)), breaks=heatmapbreaks.1$brks
 )
-pheatmap(heatmap.1f.right.3[, 1:2], cluster_rows=F, cluster_cols=F, border_color=NA,
-  show_rownames=T, show_colnames=F,
-  color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
-)
+
+```
+
+```{r previous-code-1f, include=F}
+# heatmap.1f.left.3 = heatmap.1f.left.2[!grepl("CASP9_3", rownames(heatmap.1f.left.2)), ]
+# rownames(heatmap.1f.left.3)[grep("NonTargetingControl", rownames(heatmap.1f.left.3))] = paste0("NTC_", 1:3)
+# rownames(heatmap.1f.left.3)[grep("SafeHarbor", rownames(heatmap.1f.left.3))] = paste0("SafeH_", c("chr11_38", "chr4_9", "chr9_18"))
+# heatmap.1f.left.3 = heatmap.1f.left.3[row.order, ]
+# 
+# heatmap.1f.right.3 = heatmap.1f.right.2[!grepl("CASP9_3", rownames(heatmap.1f.right.2)), ]
+# rownames(heatmap.1f.right.3)[grep("NonTargetingControl", rownames(heatmap.1f.right.3))] = paste0("NTC_", 1:3)
+# rownames(heatmap.1f.right.3)[grep("SafeHarbor", rownames(heatmap.1f.right.3))] = paste0("SafeH_", c("chr11_38", "chr4_9", "chr9_18"))
+# heatmap.1f.right.3 = heatmap.1f.right.3[row.order, ]
+# 
+# pheatmap(heatmap.1f.left.3, cluster_rows=F, cluster_cols=F, border_color=NA,
+#   show_rownames=T, show_colnames=F,
+#   color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
+# )
+# pheatmap(heatmap.1f.right.3[, 1:2], cluster_rows=F, cluster_cols=F, border_color=NA,
+#   show_rownames=T, show_colnames=F,
+#   color=colorRampPalette(c("blue", "white", "red"))(100), breaks=seq(-0.30, +0.30, length.out=100)
+# )
 ```
