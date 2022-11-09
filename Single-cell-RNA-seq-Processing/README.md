@@ -53,7 +53,7 @@ library(Rsubread)
 Run combinedday1replicates.R to obtain the proccessed single cell experiment. Also, run cell_line_d25.R to obtain a processed single cell experiment for day 25 in vitro cellline dataset. Then run Figures.R to convert to a seurat object and obtain the figures.
 
 ## To Do
-Edit Figures Markdown, Change preprocessing to markdown, add bash scripts
+Add Hyuns code,  add bash scripts
 
 ## Authors
 
