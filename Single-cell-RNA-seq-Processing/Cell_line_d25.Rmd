@@ -1,0 +1,174 @@
+---
+title: "Cell_line_d25.Rmd"
+author: "Fayzan Chaudhry"
+date: "11/9/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+```{r load-1}
+rm(list = ls())
+library(DropletUtils)
+library(scater)
+library(AnnotationHub)
+library(scran)
+library(DropletTestFiles)
+library(EnsDb.Hsapiens.v86)
+library(pheatmap)
+library(ggplot2)
+library(Seurat)
+library(intrinsicDimension)
+library(batchelor)
+library(dplyr)
+library(bluster)
+library(pheatmap)
+library(Seurat)
+library(BiocParallel)
+library(Matrix)
+addTaskCallback(function(...) {set.seed(100);TRUE}) #Permanently sets seed so is reproducible
+```
+
+##Load Object
+
+```{r Object}
+path6 = "/Users/fayzan/D25_IGO_09060_B_1/outs/filtered_feature_bc_matrix"
+combined_sce1 <- read10xCounts(c(path6), c("cellline"))
+
+```
+
+##Preprocessing
+
+```{r Preprocessing}
+location <- mapIds(EnsDb.Hsapiens.v86, keys=rowData(combined_sce1)$ID, column="SEQNAME", keytype="GENEID")
+min_UMI <- 1000
+min_nGene <- 500
+max_nGene <- 7000
+max_mito_frac <- 0.25
+
+combined_sce1 <- addPerCellQC(combined_sce1, subsets=list(Mt=which(location=="MT")), flatten=TRUE)
+combined_sce1 <- addPerFeatureQC(combined_sce1, flatten=TRUE)
+
+##plot number of UMI
+plotColData(combined_sce1, x="Sample", y="sum", colour_by="Sample") +
+  ylab("Number of UMIs") + geom_hline(yintercept=min_UMI, color='red')
+
+## plot number of genes
+plotColData(combined_sce1, x="Sample", y="detected", colour_by="Sample") +
+  ylab("Number of genes")+ geom_hline(yintercept=min_nGene, color='red') + geom_hline(yintercept=max_nGene, color='red')
+
+## plot number of Mt. counts
+plotColData(combined_sce1, x="Sample", y="subsets_Mt_sum", colour_by="Sample") + ylab("Number of Mt UMIs")
+
+## plot % of Mt. counts
+plotColData(combined_sce1, x="Sample", y="subsets_Mt_percent", colour_by="Sample") + ylab("% of Mt UMIs") +
+  geom_hline(yintercept=max_mito_frac*100, color='red')
+
+
+## histogram of total UMI counts
+ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=sum)) + geom_histogram(binwidth=100, color='blue') +
+  facet_wrap(~ Sample, ncol=5) + xlab("Number of UMIs") + geom_vline(xintercept=min_UMI, color='red')
+
+## histogram of total gene counts
+ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=detected)) + geom_histogram(binwidth=50, color='lightblue') +
+  facet_wrap(~ Sample, ncol=5) + xlab("Number of genes") + geom_vline(xintercept=min_nGene, color='red')
+
+## number of genes vs. number of UMI color by %Mt genes
+ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=detected, y=sum)) + geom_point(aes(col=subsets_Mt_percent)) +
+  facet_wrap( ~Sample, ncol=5) + xlab("Gene counts") + ylab("UMI counts")
+
+count.depth <- tibble::as_tibble(colData(combined_sce1)) %>% arrange(desc(sum))
+ggplot(data= count.depth, aes(x=1:nrow(count.depth), y=total)) + geom_point(aes(col=total)) + facet_wrap( ~Sample, ncol=5)
+
+count.depth <- tibble::as_tibble(colData(combined_sce1)) %>% arrange(desc(sum))
+ggplot(data= count.depth, aes(x=1:nrow(count.depth), y=total)) + geom_point(aes(col=total)) #+ facet_wrap( ~Sample, ncol=2)
+
+## filter by UMI and gene counts
+print(paste("Size of before cell filtering", ncol(combined_sce1), "cells", nrow(combined_sce1), "genes"))
+out.of.range.UMI <- (combined_sce1$total <= min_UMI ) 
+out.of.range.genecounts <- (combined_sce1$detected <= min_nGene |  combined_sce1$detected >= max_nGene)
+
+combined_sce1 <- combined_sce1[,(!out.of.range.UMI & !out.of.range.genecounts)]
+print(paste("Size of matrix after cell filtering", ncol(combined_sce1), "cells", nrow(combined_sce1), "genes"))
+
+## Filter by %Mt
+high.mt <- (colData(combined_sce1)$subsets_Mt_percent >= (max_mito_frac*100))
+combined_sce1 <- combined_sce1[,!high.mt]
+print(paste("Size of matrix after Mitochondria filtering", ncol(combined_sce1), "cells", nrow(combined_sce1), "genes"))
+
+
+## remove low expressed genes, minimumly expressed 
+gene2keep <- rowData(combined_sce1)$detected > 0
+
+plot(scater::nexprs(combined_sce1, byrow=TRUE), rowData(combined_sce1)$detected, pch=19, col=ifelse(gene2keep, "gray60", "red"),
+     xlab="number of cells with non-zero counts", ylab="% dropout")
+abline(h=quantile(rowData(combined_sce1)$detected, prob=0.01), col='red')
+
+combined_sce1 <- combined_sce1[gene2keep,]
+print(paste("Size of matrix after gene dropout removal", ncol(combined_sce1), "cells", nrow(combined_sce1), "genes")) 
+
+scater::plotRowData(combined_sce1, x = "detected", y = "mean") + xlab("percentage of cells with counts for each gene") +
+  ylab("mean count of gene") + ggtitle("% of cells gene is detected")
+
+```
+
+##Load Normalization by Deconvolution and PCA
+
+```{r Normalization by Deconvolution and PCA}
+## normalize
+clusters <- scran::quickCluster(combined_sce1, min.size=100)
+combined_sce1 <- scran::computeSumFactors(combined_sce1, cluster=clusters)
+combined_sce1 <- scater::logNormCounts(combined_sce1)
+
+BinomialDeviance <- function(x, p, n)
+  
+{
+  ## x - gene count vector
+  ## p - colSums(x)
+  ## n - colSums(x).
+  term1 <- sum(x*log(x/(n*p)), na.rm=TRUE)
+  nx <- n-x
+  term2 <- sum(nx*log(nx/(n*(1-p))), na.rm=TRUE)
+  return(2*(term1+term2))
+  
+}
+
+combined_sce1 <- combined_sce1
+var.genes <- modelGeneVar(combined_sce1) 
+
+cnts <- counts(combined_sce1)
+cnts <- cnts[Matrix::rowSums(cnts) >0,]
+size.fac <- Matrix::colSums(cnts)
+BinomialDeviance(cnts[34,], sum(cnts[34,])/sum(size.fac),size.fac)
+
+#Find Most Variable Genes
+top.hvgs <- getTopHVGs(var.genes, n=4000)
+combined_sce1 <- scater::runPCA(combined_sce1, subset_row = top.hvgs)
+combined_sce1 <- denoisePCA(combined_sce1, var.genes)
+combined_sce1 <- scater::runPCA(combined_sce1,  ncomponents = 100, ntop = 4000)
+```
+
+
+##Cluster
+
+```{r Cluster}
+g <- buildSNNGraph(combined_sce1, k=40, use.dimred="PCA")
+temp2 <- igraph::cluster_walktrap(g)
+temp1 <- igraph::cut_at(temp2, n=3)
+combined_sce1$cluster <-  factor(temp1)
+
+combined_sce1 <- scater::runUMAP(combined_sce1, dimred="PCA", min_dist=.01, n_neighbors = 50)
+scater::plotUMAP(combined_sce1, colour_by="cluster", text_by="cluster")
+saveRDS(combined_sce1, file="cellline_clean.rds")
+```
+
+
+
+
+
+
+
+
