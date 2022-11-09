@@ -1,0 +1,208 @@
+---
+title: "Combinedday1replicates.Rmd"
+author: "Fayzan Chaudhry"
+date: "11/9/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+```{r load-1}
+rm(list = ls())
+library(DropletUtils)
+library(scater)
+library(AnnotationHub)
+library(scran)
+library(DropletTestFiles)
+library(EnsDb.Hsapiens.v86)
+library(pheatmap)
+library(ggplot2)
+library(Seurat)
+library(intrinsicDimension)
+library(batchelor)
+library(dplyr)
+library(bluster)
+library(pheatmap)
+
+addTaskCallback(function(...) {set.seed(100);TRUE}) #Permanently sets seed so is reproducible
+```
+
+##Load Object
+
+```{r Object}
+path1="~/BetelLab/WTandReps/WT1outs/filtered_feature_bc_matrix" 
+path2="~/BetelLab/WTandReps/WT2outs/filtered_feature_bc_matrix"
+path4="~/BetelLab/WTandReps/KO1outs/filtered_feature_bc_matrix"
+path5="~/BetelLab/WTandReps/KO2outs/filtered_feature_bc_matrix"
+combined_sce = read10xCounts(c(path1, path2, path4, path5), c("WT1", "WT2","KO1", "KO2"))
+```
+
+##Preprocessing
+
+```{r Preprocessing}
+#Map Mitocom
+location <- mapIds(EnsDb.Hsapiens.v86, keys=rowData(combined_sce)$ID, column="SEQNAME", keytype="GENEID")
+combined_sce1 <- combined_sce
+#QC
+min_UMI <- 1000
+min_nGene <- 500
+max_nGene <- 7000
+max_mito_frac <- 0.25
+
+combined_sce1 <- addPerCellQC(combined_sce1, subsets=list(Mt=which(location=="MT")), flatten=TRUE)
+combined_sce1 <- addPerFeatureQC(combined_sce1, flatten=TRUE)
+samples <- unique(combined_sce$Sample)
+
+##plot number of UMI
+plotColData(combined_sce1, x="Sample", y="sum", colour_by="Sample") +
+  ylab("Number of UMIs") + geom_hline(yintercept=min_UMI, color='red')
+
+## plot number of genes
+plotColData(combined_sce1, x="Sample", y="detected", colour_by="Sample") +
+  ylab("Number of genes")+ geom_hline(yintercept=min_nGene, color='red') + geom_hline(yintercept=max_nGene, color='red')
+
+## plot number of Mt. counts
+plotColData(combined_sce1, x="Sample", y="subsets_Mt_sum", colour_by="Sample") + ylab("Number of Mt UMIs")
+
+## plot % of Mt. counts
+plotColData(combined_sce1, x="Sample", y="subsets_Mt_percent", colour_by="Sample") + ylab("% of Mt UMIs") +
+  geom_hline(yintercept=max_mito_frac*100, color='red')
+
+## histogram of total UMI counts
+ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=sum)) + geom_histogram(binwidth=100, color='blue') +
+  facet_wrap(~ Sample, ncol=5) + xlab("Number of UMIs") + geom_vline(xintercept=min_UMI, color='red')
+
+## histogram of total gene counts
+ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=detected)) + geom_histogram(binwidth=50, color='lightblue') +
+  facet_wrap(~ Sample, ncol=5) + xlab("Number of genes") + geom_vline(xintercept=min_nGene, color='red')
+
+## number of genes vs. number of UMI color by %Mt genes
+ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=detected, y=sum)) + geom_point(aes(col=subsets_Mt_percent)) +
+  facet_wrap( ~Sample, ncol=5) + xlab("Gene counts") + ylab("UMI counts")
+
+count.depth <- tibble::as_tibble(colData(combined_sce1)) %>% arrange(desc(sum))
+ggplot(data= count.depth, aes(x=1:nrow(count.depth), y=total)) + geom_point(aes(col=total)) + facet_wrap( ~Sample, ncol=5)
+
+count.depth <- tibble::as_tibble(colData(combined_sce1)) %>% arrange(desc(sum))
+ggplot(data= count.depth, aes(x=1:nrow(count.depth), y=total)) + geom_point(aes(col=total)) #+ facet_wrap( ~Sample, ncol=2)
+
+## filter by UMI and gene counts
+print(paste("Size of before cell filtering", ncol(combined_sce1), "cells", nrow(combined_sce1), "genes"))
+out.of.range.UMI <- (combined_sce1$total <= min_UMI ) 
+out.of.range.genecounts <- (combined_sce1$detected <= min_nGene |  combined_sce1$detected >= max_nGene)
+
+combined_sce1 <- combined_sce1[,(!out.of.range.UMI & !out.of.range.genecounts)]
+print(paste("Size of matrix after cell filtering", ncol(combined_sce1), "cells", nrow(combined_sce1), "genes"))
+
+## Filter by %Mt
+high.mt <- (colData(combined_sce1)$subsets_Mt_percent >= (max_mito_frac*100))
+combined_sce1 <- combined_sce1[,!high.mt]
+print(paste("Size of matrix after Mitochondria filtering", ncol(combined_sce1), "cells", nrow(combined_sce1), "genes"))
+
+
+## remove low expressed genes, minimumly expressed 
+gene2keep <- rowData(combined_sce1)$detected > 0
+
+#PLOT
+plot(scater::nexprs(combined_sce1, byrow=TRUE), rowData(combined_sce1)$detected, pch=19, col=ifelse(gene2keep, "gray60", "red"),
+     xlab="number of cells with non-zero counts", ylab="% dropout")
+abline(h=quantile(rowData(combined_sce1)$detected, prob=0.01), col='red')
+dev.off()
+
+combined_sce1 <- combined_sce1[gene2keep,]
+print(paste("Size of matrix after gene dropout removal", ncol(combined_sce1), "cells", nrow(combined_sce1), "genes")) 
+
+#PLOT
+scater::plotRowData(combined_sce1, x = "detected", y = "mean") + xlab("percentage of cells with counts for each gene") +
+  ylab("mean count of gene") + ggtitle("% of cells gene is detected")
+
+```
+
+
+##Cell cycle regression, normalization, and clustering
+
+```{r Cluster}
+combined_sce2 = combined_sce1
+make.symbols.unique = data.frame(col1=rowData(combined_sce2)$Symbol, col2="1")
+for (j in 1:NROW(make.symbols.unique)) {
+  if (j %% 10000 == 0) {message(j)}
+  index = which(make.symbols.unique$col1 == make.symbols.unique$col1[j])
+  if (length(index) == 1) {
+    make.symbols.unique$col2[j] = make.symbols.unique$col1[j]
+  }
+  if (length(index) == 2) {
+    make.symbols.unique$col2[index[1]] = make.symbols.unique$col1[index[1]]
+    make.symbols.unique$col2[index[2]] = paste0(make.symbols.unique$col1[index[2]], ".1")
+  }
+}
+rownames(combined_sce2) = make.symbols.unique$col2
+fayzan.1 = as.Seurat(combined_sce2, counts="counts", data=NULL)
+
+# Start
+fayzan.1 %<>% NormalizeData %>% FindVariableFeatures(selection.method="vst") %>% ScaleData(features=rownames(fayzan.1))
+# Provisional PCA
+fayzan.1 = RunPCA(fayzan.1, features=VariableFeatures(fayzan.1), ndims.print=1:6, nfeatures.print=10)
+# A list of cell cycle markers, from Tirosh et al, 2015, is loaded with Seurat.  We can
+# segregate this list into markers of G2/M phase and markers of S phase
+s.genes = cc.genes$s.genes
+g2m.genes = cc.genes$g2m.genes
+# Assign cell cycle scores
+fayzan.2 = CellCycleScoring(fayzan.1, s.features=s.genes, g2m.features=g2m.genes, set.ident=T)
+# Visualize the distribution of cell cycle markers across
+# RidgePlot(fayzan.2, features=c("PCNA", "TOP2A", "MCM6", "MKI67"), ncol=2)
+# Running a test-case PCA on cell cycle genes reveals, unsurprisingly, that cells separate entirely by phase
+fayzan.3 = RunPCA(fayzan.2, features=c(s.genes, g2m.genes))
+# DimPlot(fayzan.3)
+# Actual regress here
+fayzan.4 = ScaleData(fayzan.2, vars.to.regress=c("S.Score", "G2M.Score"), features=rownames(fayzan.2))
+fayzan.4 = RunPCA(fayzan.4, features=VariableFeatures(fayzan.4), nfeatures.print=10)
+# When running a PCA on only cell cycle genes, cells no longer separate by cell-cycle phase
+fayzan.5 = RunPCA(fayzan.4, features=c(s.genes, g2m.genes))
+# DimPlot(fayzan.5)
+
+# cell cycle regression pca plot, before and after
+plot.1.list = list()
+plot.1.list$before = DimPlot(fayzan.3, pt.size=2, shuffle=T)
+plot.1.list$before[[1]]$layers[[1]]$aes_params$alpha = 0.30
+plot.1.list$after = DimPlot(fayzan.5, pt.size=2, shuffle=T)
+plot.1.list$after[[1]]$layers[[1]]$aes_params$alpha = 0.30
+pdf("Fayzan.Project_11351_E.cell.cycle.regression.before.and.after.20220420.pdf", width=7, height=7)
+plot.1.list$before + labs(title="Before cell cycle regression")
+plot.1.list$after + labs(title="After cell cycle regression")
+dev.off()
+
+fayzan.4 = FindNeighbors(fayzan.4, dims=1:10)
+fayzan.4 = FindClusters(fayzan.4, resolution=0.5)
+Idents(fayzan.4) %>% unique
+# [1] 4 0 2 1 3 7 5 6 8
+# Levels: 0 1 2 3 4 5 6 7 8
+
+fayzan.4 = RunUMAP(fayzan.4, dims=1:10)
+# DimPlot(fayzan.4, reduction="umap")
+# note that you can set `label = TRUE` or use the LabelClusters function to help label individual clusters
+fayzan.4$sample = fayzan.4$Sample
+fayzan.4$condition = factor(gsub("[12].*", "", fayzan.4$sample), levels=c("WT", "KO"))
+fayzan.4.sce = as.SingleCellExperiment(fayzan.4)
+ 
+library(scran); library(bluster)
+g <- buildSNNGraph(fayzan.4.sce, k=40, use.dimred="PCA")
+temp2 <- igraph::cluster_walktrap(g)
+temp1 <- igraph::cut_at(temp2, n=7)
+ratio <- pairwiseModularity(g, temp1, as.ratio=TRUE)
+dim(ratio)
+# [1] 7 7
+ 
+# saveRDS(temp1, file="Fayzan.4.igraph.cutn.7.20220422.rds")
+# fwrite(data.frame(cellnames=colnames(fayzan.4), barcode=colData(fayzan.4.sce)$Barcode, seurat_cluster=colData(fayzan.4.sce)$seurat_clusters, igraph_cluster=temp1), file="Fayzan.4.igraph.cutn.7.20220423.csv", sep=",", row.names=F)
+```
+
+
+
+
+
+
+
+
