@@ -31,7 +31,7 @@ Don't hesitate to get in touch with questions related to the code.
 
 
 
-## scVDJ and scRNA-seq data processing
+## scRNA-seq data processing
 
 In principle, we followed the ideas and workflows discussed by Amezquita et al. in the excellent online book ["Orchestrating single-cell analysis"](https://osca.bioconductor.org/) describing single-cell analyses carried out with packages of the Bioconductor environment.
 
