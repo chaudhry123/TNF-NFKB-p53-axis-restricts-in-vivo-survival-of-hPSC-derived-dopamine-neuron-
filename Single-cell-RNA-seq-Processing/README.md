@@ -1,6 +1,4 @@
-# Project Title
-
-Single-cell-RNA-seq-Processing
+# Single-cell-RNA-seq-Processing
 
 ## Description
 
