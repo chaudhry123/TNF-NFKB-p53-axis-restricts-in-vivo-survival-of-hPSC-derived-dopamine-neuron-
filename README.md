@@ -1,5 +1,5 @@
 
-# Bioinformatic methods (NEEDS EDITS)
+# Bioinformatic methods
 
 >TNF NFKB p53 axis restricts in vivo survival of hPSC derived dopamine neuron
 
