@@ -1,6 +1,6 @@
 ---
-title: "Figure 3 and S5 processing script"
-author: "Hyunwoo Cho"
+title: "Figure 4 and S4 processing script"
+author: "Hyein Cho"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -19,8 +19,14 @@ knitr::opts_chunk$set(
 Download the sequence data from SRA and convert to `FASTQ` using this script.
 
 ```{bash download1, eval=F}
-prefetch SRR111111xx
-fastq-dump SRR111111xx.sra --split-files --gzip -O SRR111111xx/
+wget -c https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-centos_linux64.tar.gz
+tar zxvf sratoolkit.current-centos_linux64.tar.gz
+# set up PATH variable.
+bulkf4=("" "" "" "" "" "")
+prefetch `( IFS=$' '; echo "${bulkf4[*]}" )`
+for j in ${!bulkf4[@]}; do
+  fastq-dump ${j}.sra --split-files --gzip -O ${j}/
+done
 ```
 
 The `MD5` sum of the `fastq` files is attached below.
@@ -63,10 +69,10 @@ First pass.
 
 ```{bash align1, eval=F}
 wget -c https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_38/GRCh37_mapping/gencode.v38lift37.annotation.gtf.gz
-gunzip -c gencode.v38lift37.annotation.gtf.gz
+gunzip gencode.v38lift37.annotation.gtf.gz
 
 STAR --version
-2.5.0a
+# 2.5.0a
 
 STAR --runMode alignReads --runThreadN 16 \
   --genomeDir /directory/iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta \
@@ -149,8 +155,7 @@ DESeq2Obj.vst = varianceStabilizingTransformation(DESeq2Obj)
 dim(DESeq2Obj)
 ```
 
-### Figure 3A
-
+### Figure 4A
 ```{r pca-1}
 p1 = plotPCA(DESeq2Obj.vst, ntop=3000, intgroup="condition", returnData=T)
 
@@ -169,8 +174,7 @@ Note that the ellipses in the paper were added manually.
 p1
 ```
 
-### Figure S5A
-
+### Figure S4A
 ```{r pca-2}
 ntop.3000.selector = rowVars(assay(DESeq2Obj.vst)) %>% order(decreasing=T) %>% head(3000)
 
@@ -191,7 +195,7 @@ par(mar=c(0.6, 0.6, 0.6, 10.1))
 plot(row.hclust.all.d, sub="", xlab="", yaxt="n", horiz=T)
 ```
 
-### Figure 3B
+### Figure 4B
 ```{r ma-plot-1}
 diffExprLst.list = list(
   D0.D1Culture=results(DESeq2Obj, contrast=c("condition", "D1Culture", "D0"), alpha=0.05),
@@ -211,11 +215,11 @@ legend("topright", inset=c(0, 0), legend=sum(diffExprLst.list[[3]]$padj <= 0.05 
 legend("bottomright", inset=c(0, 0), legend=sum(diffExprLst.list[[3]]$padj <= 0.05 & diffExprLst.list[[3]]$log2FoldChange < 0), bty="n", cex=1.30, text.col="blue")
 ```
 
-### Figure 3C
+### Figure 4C
 hallmark markers dotplot on D1 culture -> D1 graft, significantly up
 ```{r hallmark-dotplot-1}
 library(msigdbr)
-# The latest version of CRAN's msigdbr is 7.5.1.
+# CRAN's msigdbr version of 7.5.1 was used.
 packageVersion("msigdbr")
 
 h_gene_sets = msigdbr(species="human", category="H")
@@ -229,7 +233,7 @@ hallmark.df.3.up = enricher(gene=rownames(subset(diffExprLst.list[[3]], log2Fold
 dotplot(hallmark.df.3.up, showCategory=30) + theme_classic()
 ```
 
-### Figure S5B
+### Figure S4B
 hallmark markers dotplot on D1 culture -> D1 graft, significantly down
 ```{r go-dotplot-1}
 hallmark.df.3.down = enricher(gene=rownames(subset(diffExprLst.list[[3]], log2FoldChange < 0 & padj <= 0.05)), TERM2GENE=msigdbr_t2g)
@@ -237,7 +241,7 @@ hallmark.df.3.down = enricher(gene=rownames(subset(diffExprLst.list[[3]], log2Fo
 dotplot(hallmark.df.3.down, showCategory=30) + theme_classic()
 ```
 
-### Figure S5C
+### Figure S4C
 Heat map of GO terms belonging in the GO term (response to tumor necrosis factor)
 ```{r heatmap-1}
 go.term = "GO:0034612" # (response to tumor necrosis factor)
@@ -267,7 +271,7 @@ gsea.56up.genes.list = rownames(heatmap.gsea.withvar.1[heatmap.gsea.withvar.1[, 
 pheatmap(heatmap.input.withvar[rownames(heatmap.input.withvar) %in% (gsea.56up.genes.list %>% unique), ] %>% as.matrix, scale="row", main="GO:0034612 (response to tumor necrosis factor)", color=colorRampPalette(c("blue", "white", "red"))(100), cluster_rows=T, cluster_distance_rows="euclidean", cluster_cols=F, show_rownames=T, fontsize=7)
 ```
 
-### Figure 3D
+### Figure 4D
 GSEA using gseaplot2 of enrichplot
 
 This part is not reproducible. Especially the P value part. Saving the result is recommended.
@@ -292,7 +296,7 @@ library(enrichplot)
 gseaplot2(gse, title=gse$Description[j], geneSetID=j)
 ```
 
-### Figure 3E
+### Figure 4E
 Plot of GSEA normalized enrichment scores, sorted in decreasing order
 ```{r load-nes-data-1, include=F}
 library(openxlsx)
@@ -343,8 +347,8 @@ nes.1 = ggplot() + geom_point(data=gse.ordered.1, aes(rankx, abs(NES), fill=Lege
 nes.1
 ```
 
-### Figure S5H
-```{r plotcounts-1}
+
+```{r plotcounts-1, eval=F}
 p.h1 = plotCounts(DESeq2Obj, gene="TNFSF10", intgroup="condition", returnData=T)
 p.h2 = plotCounts(DESeq2Obj, gene="TNFSF12", intgroup="condition", returnData=T)
 p.h.combine = data.frame(rbind(p.h1, p.h2), gene=rep(c("TNFSF10", "TNFSF12"), each=6))
@@ -359,3 +363,7 @@ library(ggpubr)
 ggplot() + geom_bar(data=p.h.average, aes(x, count, fill=Gene), stat="identity") + scale_fill_manual(values=c("TNFSF10"="#F7989B", "TNFSF12"="#FFD479")) + geom_point(data=p.h.combine, aes(x, count), color="black") + scale_x_discrete(labels=rep(c("D0", "D1 in vitro", "D1 in vivo"), 2)) + xlab("") + ylab("DESeq2 normalized counts") + theme_classic() + theme(legend.position=c(0.20, 0.75)) + rotate_x_text(angle=30)
 ```
 
+```{r session-info}
+library(devtools)
+session_info(pkgs="attached")
+```
