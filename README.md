@@ -48,8 +48,8 @@ The raw data (fastq files, read counts from CellRanger) can be downloaded from G
 For the single-cell data, some of the data can be downloaded from Box in the form of RDS (load into R via `in_data <- readRDS()
 
 ## Packages
-[1] "abind 1.4.5" 
-[1] "AnnotationDbi 1.56.2" 
+[1] "abind 1.4.5" <br />
+[1] "AnnotationDbi 1.56.2" <br />
 [1] "ape 5.7.1"
 [1] "ash 1.0.15"
 [1] "base 4.1.1"
