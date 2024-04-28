@@ -263,8 +263,8 @@ For the single-cell data, some of the data can be downloaded from Box in the for
 ## Python
 Package                       Version
 ----------------------------- -----------
-anndata                       0.9.2
-anyio                         3.6.2
+anndata                       0.9.2 <br />
+anyio                         3.6.2 <br />
 appnope                       0.1.3
 argon2-cffi                   21.3.0
 argon2-cffi-bindings          21.2.0
