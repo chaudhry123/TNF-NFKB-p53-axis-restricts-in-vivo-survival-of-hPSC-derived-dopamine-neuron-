@@ -19,12 +19,12 @@ Samples were processed at the the sequencing facilities at MSKCC and Weill Corne
 Don't hesitate to get in touch with questions related to the code.
 
 ![](WCM_MB_LOGO_HZSS1L_CLR_RGB.png)
+## CRISPR 
+
+### Processing 
+
 
 ## Bulk RNA-seq
-
-### Sample Preparation 
-
-
 
 ### Processing 
 
@@ -35,16 +35,8 @@ Don't hesitate to get in touch with questions related to the code.
 
 In principle, we followed the ideas and workflows discussed by Amezquita et al. in the excellent online book ["Orchestrating single-cell analysis"](https://osca.bioconductor.org/) describing single-cell analyses carried out with packages of the Bioconductor environment.
 
-### Sample prep
-
-
 ### Processing and analysis
-
-
-
-
-
-## Package versions
+The samples underwent 10X chromium Single Cell 3' v3 processing. The reads were aligned to human GRCh38 (GENCODE v32/Ensembl 98) using Cell Ranger 5.0.0. The resulting filtered count matrix was further filtered for cells with i) minimum 1000 UMI counts, ii) 500 ≤ gene counts ≤ 7000, iii) and mitochondrial gene percentage of less than 25%. Normalization by deconvolution in scran version 1.22.1 was performed and the signal from the gene expression related to the cell cycle was regressed out as directed by Seurat version 4.1. The default 2000 highly variable genes were selected, and the first 50 principal components were extracted from the cell cycle-regressed matrix. Subsequently, the shared nearest neighbors were calculated from the principal components using buildSNNGraph of R software scran using the k parameter of 40. Seven clusters were identified and using the walktrap algorithm, with the function cluster_walktrap of R implementation of the igraph package version 1.3.5. The uniform manifold approximation and projection (UMAP) was performed. Differential gene expression was performed via the Seurat package using MAST. Pseudotime was conducted with Monocle in R, while velocity was conducted with scVelo in python. Cluster annotation was performed via clusterProfiler package version 4.2.2, and differential expression visualization using EnhancedVolcano version 1.12.0.
 
 ## Data for download
 
@@ -53,8 +45,6 @@ The raw data (fastq files, read counts from CellRanger) can be downloaded from G
 
 >The easiest way to get started is to use the processed data provided here.
 
-For the single-cell data, some of the data can be downloaded from Box in the form of RDS (load into R via `in_data <- readRDS()`) or RDA objects (load into R via `load()`).
-For the direct links to the RDS/RDA objects, see [`scRNAseq/data/data_links.txt`](https://github.com/abcwcm/GeartySchietinger/blob/master/scRNAseq/data/data_links.txt).
-The `data/` directory in the scRNA-seq directory contains some text files that contain just the cell labels and the mouse labels for individual cells.
+For the single-cell data, some of the data can be downloaded from Box in the form of RDS (load into R via `in_data <- readRDS()
 
 
