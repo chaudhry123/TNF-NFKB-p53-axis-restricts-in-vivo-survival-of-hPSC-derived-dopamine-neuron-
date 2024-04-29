@@ -6,7 +6,7 @@ To further define the transcriptional landscape of grafted dopamine neurons, we 
 
 ### Executing program
 
-Run combinedday1replicates.R to obtain the proccessed single cell experiment. Also, run cell_line_d25.R to obtain a processed single cell experiment for day 25 in vitro cellline dataset. Then run Figures.R to convert to a seurat object and obtain the figures in figure 5 and Supplement figure 5
+Run combinedday1replicates.R to obtain the proccessed single cell experiment. Please run additional processing on the object using the processing script. Also, run cell_line_d25.R to obtain a processed single cell experiment for day 25 in vitro cellline dataset. Then run Figures.R to convert to a seurat object and obtain the figures in figure 5 and Supplement figure 5
 
 ## Authors
 
