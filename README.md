@@ -10,7 +10,6 @@ Here, we provide an overview of the data and scripts that we used.
 **CONTENT**:
 
 * [Bulk RNA-seq](#Bulk-RNAseq-processingq)
-* [CRISPR](#CRISPR-screen-processing)
 * [Single Cell](#Single-cell-RNA-seq-Processing)
 * [Data for download](#data-for-download)
 
@@ -19,17 +18,8 @@ Samples were processed at the the sequencing facilities at MSKCC and Weill Corne
 Don't hesitate to get in touch with questions related to the code.
 
 ![](WCM_MB_LOGO_HZSS1L_CLR_RGB.png)
-## CRISPR 
-
-### Processing 
-
-
 ## Bulk RNA-seq
-
-### Processing 
-
-
-
+We performed bulk RNAseq analysis to compare gene expression of grafted NURR1+ neurons, re-isolated at 1 dpt from the mouse brain (d1 graft), versus that of the matched FACS-purified neurons isolated immediately prior to transplantation (d0) or analyzed at 1 day of in vitro culture (d1 culture). Principal component analysis (PCA) and dendrogram analyses demonstrated that grafted dopamine neurons exhibited the most distinct transcriptional pattern compared to either sorted or in vitro cultured dopamine neurons
 
 ## scRNA-seq data processing
 
@@ -40,12 +30,12 @@ The samples underwent 10X chromium Single Cell 3' v3 processing. The reads were 
 
 ## Data for download
 
-The raw data (fastq files, read counts from CellRanger) can be downloaded from GEO (INSERT NUMBER HERE).
+The raw data (fastq files, read counts from CellRanger) can be downloaded from GEO GSE217131.
 
 
 >The easiest way to get started is to use the processed data provided here.
 
-For the single-cell data, some of the data can be downloaded from Box in the form of RDS (load into R via `in_data <- readRDS()
+For the single-cell data, some of the data can be downloaded from Box https://mskcc.box.com/s/dm20vn2ww1c1xto87xmzqb9kxilgxpcc
 
 ## Packages
 [1] "abind 1.4.5" <br />
