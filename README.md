@@ -21,6 +21,8 @@ Don't hesitate to get in touch with questions related to the code.
 ## Bulk RNA-seq
 We performed bulk RNAseq analysis to compare gene expression of grafted NURR1+ neurons, re-isolated at 1 dpt from the mouse brain (d1 graft), versus that of the matched FACS-purified neurons isolated immediately prior to transplantation (d0) or analyzed at 1 day of in vitro culture (d1 culture). Principal component analysis (PCA) and dendrogram analyses demonstrated that grafted dopamine neurons exhibited the most distinct transcriptional pattern compared to either sorted or in vitro cultured dopamine neurons
 
+## CRISPR
+
 ## scRNA-seq data processing
 
 In principle, we followed the ideas and workflows discussed by Amezquita et al. in the excellent online book ["Orchestrating single-cell analysis"](https://osca.bioconductor.org/) describing single-cell analyses carried out with packages of the Bioconductor environment.
