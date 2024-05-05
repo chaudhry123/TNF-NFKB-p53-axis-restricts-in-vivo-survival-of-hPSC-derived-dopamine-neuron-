@@ -27,7 +27,6 @@ library(batchelor)
 library(dplyr)
 library(bluster)
 library(pheatmap)
-library(Seurat)
 library(BiocParallel)
 library(Matrix)
 addTaskCallback(function(...) {set.seed(100);TRUE}) #Permanently sets seed so is reproducible
