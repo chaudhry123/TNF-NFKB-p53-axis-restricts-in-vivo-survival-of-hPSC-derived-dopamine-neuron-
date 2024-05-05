@@ -21,10 +21,8 @@ library(ggeasy)
 library(data.table)
 library(scuttle)
 library(SingleR)
-library("Seurat")
 library("monocle3")
 library("org.Hs.eg.db")
-library("dplyr")
 addTaskCallback(function(...) {set.seed(100);TRUE})
 
 #Check WT1 and WT2 not switched
