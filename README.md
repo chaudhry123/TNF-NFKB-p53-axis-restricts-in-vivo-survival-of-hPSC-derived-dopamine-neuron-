@@ -54,44 +54,44 @@ The raw data (fastq files, read counts from CellRanger) can be downloaded from G
 For the single-cell data, some of the data can be downloaded from Box [https://mskcc.box.com/s/dm20vn2ww1c1xto87xmzqb9kxilgxpcc
 ](https://wcm.app.box.com/folder/261280167773)
 ## Packages
-"abind * *1.4.5" <br />
-"AnnotationDbi * * 1.56.2" <br />
+"abind 1.4.5" <br />
+"AnnotationDbi 1.56.2" <br />
 "ape 5.7.1" <br />
 "ash 1.0.15" <br />
-[1] "base 4.1.1" <br />
-[1] "beachmat 2.10.0" <br />
-[1] "beeswarm 0.4.0" <br />
-[1] "Biobase 2.54.0" <br />
-[1] "BiocGenerics 0.40.0" <br />
-[1] "BiocNeighbors 1.12.0" <br />
-[1] "BiocParallel 1.28.3" <br />
-[1] "BiocSingular _ _ 1.10.0" <br />
-[1] "Biostrings 2.62.0" <br />
-[1] "bit 4.0.5" <br />
-[1] "bit64 4.0.5" <br />
-[1] "bitops 1.0.7" <br />
-[1] "blob 1.2.4" <br />
-[1] "bluster 1.4.0" <br />
-[1] "boot 1.3.28.1" <br />
-[1] "cachem 1.0.8" <br />
-[1] "circlize 0.4.15" <br />
-[1] "cli 3.6.1" <br />
-[1] "clue 0.3.64" <br />
-[1] "cluster 2.1.4" <br />
-[1] "codetools 0.2.19" <br />
-[1] "colorspace 2.1.0" <br />
-[1] "compiler 4.1.1" <br />
-[1] "ComplexHeatmap 2.10.0" <br />
-[1] "cowplot 1.1.1" <br />
-[1] "crayon 1.5.2" <br />
-[1] "data.table 1.14.8" <br />
-[1] "datasets 4.1.1" <br />
-[1] "DBI 1.1.3" <br />
-[1] "DelayedArray 0.20.0" <br />
-[1] "DelayedMatrixStats 1.16.0" <br />
-[1] "deldir 1.0.6" <br />
-[1] "digest 0.6.31" <br />
-[1] "doParallel 1.0.17" <br />
+"base 4.1.1" <br />
+"beachmat 2.10.0" <br />
+"beeswarm 0.4.0" <br />
+"Biobase 2.54.0" <br />
+"BiocGenerics 0.40.0" <br />
+"BiocNeighbors 1.12.0" <br />
+"BiocParallel 1.28.3" <br />
+"BiocSingular 1.10.0" <br />
+"Biostrings 2.62.0" <br />
+"bit 4.0.5" <br />
+"bit64 4.0.5" <br />
+"bitops 1.0.7" <br />
+"blob 1.2.4" <br />
+"bluster 1.4.0" <br />
+"boot 1.3.28.1" <br />
+"cachem 1.0.8" <br />
+"circlize 0.4.15" <br />
+"cli 3.6.1" <br />
+"clue 0.3.64" <br />
+"cluster 2.1.4" <br />
+"codetools 0.2.19" <br />
+"colorspace 2.1.0" <br />
+"compiler 4.1.1" <br />
+"ComplexHeatmap 2.10.0" <br />
+"cowplot 1.1.1" <br />
+"crayon 1.5.2" <br />
+"data.table 1.14.8" <br />
+"datasets 4.1.1" <br />
+"DBI 1.1.3" <br />
+"DelayedArray 0.20.0" <br />
+"DelayedMatrixStats 1.16.0" <br />
+"deldir 1.0.6" <br />
+"digest 0.6.31" <br />
+"doParallel 1.0.17" <br />
 [1] "dplyr 1.1.2" <br />
 [1] "dqrng 0.3.0" <br />
 [1] "DropletUtils 1.14.2" <br />
