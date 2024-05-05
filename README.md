@@ -65,7 +65,7 @@ For the single-cell data, some of the data can be downloaded from Box [https://m
 [1] "BiocGenerics 0.40.0" <br />
 [1] "BiocNeighbors 1.12.0" <br />
 [1] "BiocParallel 1.28.3" <br />
-[1] "BiocSingular 1.10.0" <br />
+[1] "BiocSingular _ _ 1.10.0" <br />
 [1] "Biostrings 2.62.0" <br />
 [1] "bit 4.0.5" <br />
 [1] "bit64 4.0.5" <br />
