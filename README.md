@@ -28,7 +28,21 @@ We performed bulk RNAseq analysis to compare gene expression of grafted NURR1+ n
 In principle, we followed the ideas and workflows discussed by Amezquita et al. in the excellent online book ["Orchestrating single-cell analysis"](https://osca.bioconductor.org/) describing single-cell analyses carried out with packages of the Bioconductor environment.
 
 ### Processing and analysis
-The samples underwent 10X chromium Single Cell 3' v3 processing. The reads were aligned to human GRCh38 (GENCODE v32/Ensembl 98) using Cell Ranger 5.0.0. The resulting filtered count matrix was further filtered for cells with i) minimum 1000 UMI counts, ii) 500 ≤ gene counts ≤ 7000, iii) and mitochondrial gene percentage of less than 25%. Normalization by deconvolution in scran version 1.22.1 was performed and the signal from the gene expression related to the cell cycle was regressed out as directed by Seurat version 4.1. The default 2000 highly variable genes were selected, and the first 50 principal components were extracted from the cell cycle-regressed matrix. Subsequently, the shared nearest neighbors were calculated from the principal components using buildSNNGraph of R software scran using the k parameter of 40. Seven clusters were identified and using the walktrap algorithm, with the function cluster_walktrap of R implementation of the igraph package version 1.3.5. The uniform manifold approximation and projection (UMAP) was performed. Differential gene expression was performed via the Seurat package using MAST. Pseudotime was conducted with Monocle in R, while velocity was conducted with scVelo in python. Cluster annotation was performed via clusterProfiler package version 4.2.2, and differential expression visualization using EnhancedVolcano version 1.12.0.
+The single-cell experiment underwent meticulous processing steps to unveil the intricacies of cellular dynamics. Initially, 10X Chromium Single Cell 3' v3 technology orchestrated the capture of cellular transcripts. These transcripts were then aligned to the human GRCh38 genome using the venerable Cell Ranger 5.0.0, based on GENCODE v32/Ensembl 98 annotations.
+
+Following alignment, a stringent filtering process ensued. Cells were retained based on a trio of criteria: a minimum of 1000 Unique Molecular Identifier (UMI) counts, gene counts ranging from 500 to 7000, and a mitochondrial gene percentage below 25%, ensuring the exclusion of potentially compromised cells.
+
+Normalization was then achieved through deconvolution using scran version 1.22.1, harmonizing the cellular landscapes. Concurrently, signal emanating from cell cycle-related gene expression was deftly excised, guided by the sage counsel of Seurat version 4.1.
+
+The exploration of cellular diversity commenced with the selection of 2000 highly variable genes, illuminating the multifaceted nature of gene expression. Principal component analysis unraveled the complex tapestry of cellular states, extracting the first 50 principal components from the cell cycle-regressed matrix.
+
+Subsequently, shared nearest neighbors emerged from the principal components, constructed using the buildSNNGraph function in R's scran, with a k parameter set to 40. The ethereal contours of cellular communities were unveiled through the walktrap algorithm, a testament to the power of the igraph package version 1.3.5.
+
+The cartographic journey continued with the uniform manifold approximation and projection (UMAP), unveiling the latent structure of cellular relationships. Differential gene expression was elucidated through the MAST algorithm in the Seurat package, shedding light on molecular disparities.
+
+Temporal dynamics were explored through pseudotime analysis via Monocle in R, while cellular trajectories were delineated using scVelo in Python, painting a picture of cellular evolution. Cluster annotation bestowed meaning upon cellular communities, courtesy of the clusterProfiler package version 4.2.2.
+
+Finally, the visual symphony of differential expression unfolded through EnhancedVolcano version 1.12.0, capturing the nuances of molecular significance in a vivid tableau. Thus, the journey of cellular exploration culminated in a rich tapestry of insights into the dynamic world of single-cell biology.
 
 ## Data for download
 
@@ -37,13 +51,13 @@ The raw data (fastq files, read counts from CellRanger) can be downloaded from G
 
 >The easiest way to get started is to use the processed data provided here.
 
-For the single-cell data, some of the data can be downloaded from Box https://mskcc.box.com/s/dm20vn2ww1c1xto87xmzqb9kxilgxpcc
-
+For the single-cell data, some of the data can be downloaded from Box [https://mskcc.box.com/s/dm20vn2ww1c1xto87xmzqb9kxilgxpcc
+](https://wcm.app.box.com/folder/261280167773)
 ## Packages
-[1] "abind 1.4.5" <br />
-[1] "AnnotationDbi 1.56.2" <br />
-[1] "ape 5.7.1" <br />
-[1] "ash 1.0.15" <br />
+"abind * * 1.4.5" <br />
+"AnnotationDbi * * 1.56.2" <br />
+"ape 5.7.1" <br />
+"ash 1.0.15" <br />
 [1] "base 4.1.1" <br />
 [1] "beachmat 2.10.0" <br />
 [1] "beeswarm 0.4.0" <br />
