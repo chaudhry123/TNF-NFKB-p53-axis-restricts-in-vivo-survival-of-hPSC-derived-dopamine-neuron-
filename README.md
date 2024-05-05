@@ -54,7 +54,7 @@ The raw data (fastq files, read counts from CellRanger) can be downloaded from G
 For the single-cell data, some of the data can be downloaded from Box [https://mskcc.box.com/s/dm20vn2ww1c1xto87xmzqb9kxilgxpcc
 ](https://wcm.app.box.com/folder/261280167773)
 ## Packages
-"abind * * 1.4.5" <br />
+"abind * *1.4.5" <br />
 "AnnotationDbi * * 1.56.2" <br />
 "ape 5.7.1" <br />
 "ash 1.0.15" <br />
