@@ -20,7 +20,13 @@ By sharing our code and data openly, we aim to foster transparency, reproducibil
 
 ### Executing program
 
-Run combinedday1replicates to obtain the proccessed single cell experiment. Please run additional processing on the object using the processing script. Also, run cell_line_d25 to obtain a processed single cell experiment for day 25 in vitro cellline dataset. Then run Figures1 to convert to a seurat object and obtain the figures in figure 5 and Supplement figure 5. The objects needed for this are cellline object and finalobj.rds. Monocle.R and Jupyter survival analysis script will produce monocle results in supplement.
+To obtain the processed single-cell experiment from the combined day 1 replicates, execute the combinedday1replicates script. Subsequently, apply additional processing steps using the provided processing script. For the day 25 in vitro cell line dataset, run the cell_line_d25 script to generate the processed single-cell experiment.
+
+After obtaining the necessary objects, run the Figures1 script to convert them into a Seurat object and generate the figures for Figure 5 and Supplement Figure 5. The required objects for this step are the cell line object and finalobj.rds.
+
+For Monocle analysis, execute the Monocle.R script and the Jupyter notebook for survival analysis to generate Monocle results for the supplement.
+
+These steps ensure the generation of processed single-cell experiments, conversion to Seurat objects, and the creation of figures for analysis and visualization, along with additional analysis using Monocle and survival analysis.
 
 ## Authors
 
