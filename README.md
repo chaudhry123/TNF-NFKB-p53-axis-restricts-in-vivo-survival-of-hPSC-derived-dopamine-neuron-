@@ -51,7 +51,7 @@ The raw data (fastq files, read counts from CellRanger) can be downloaded from G
 
 >The easiest way to get started is to use the processed data provided here.
 
-For the single-cell data, some of the data can be downloaded from Box https://mskcc.box.com/s/dm20vn2ww1c1xto87xmzqb9kxilgxpcc
+For the single-cell data, some of the data can be downloaded from Box https://mskcc.box.com/s/wn5uvwxu2xm4hw219mo0id3r9nkyyprx
 ## Packages
 Package                       Version
 ----------------------------- -----------
