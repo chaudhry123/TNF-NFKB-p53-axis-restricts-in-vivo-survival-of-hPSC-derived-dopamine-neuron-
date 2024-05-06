@@ -56,9 +56,9 @@ The raw (fastq files) and processed (read counts from HTSeq-count and CellRanger
 
 >The easiest way to get started is to use the processed data provided here.
 
-For the CRISPR screen data, refer to the `internal-data` [directory](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/tree/main/CRISPR-screen-processing/internal-data) in this repository.
+For the CRISPR screen data, refer to the `internal-data` [directory](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/tree/main/CRISPR-screen-processing/internal-data) in this repository. Follow through the code highlighted in [code-to-generate-fig-1.Rmd](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/blob/main/CRISPR-screen-processing/code-to-generate-fig-1.Rmd).
 
-For the bulk RNA-seq data, refer to the `internal-data` [directory](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/tree/main/Bulk-RNAseq-processing/internal-data) in this repository.
+For the bulk RNA-seq data, refer to the `internal-data` [directory](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/tree/main/Bulk-RNAseq-processing/internal-data) in this repository. Follow through the code highlighted in [bulk-rnaseq-run-through.sh](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/blob/main/Bulk-RNAseq-processing/bulk-rnaseq-run-through.sh).
 
 For the single-cell data, some of the data can be downloaded from Box https://mskcc.box.com/s/wn5uvwxu2xm4hw219mo0id3r9nkyyprx
 ## Packages
