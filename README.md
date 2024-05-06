@@ -14,19 +14,25 @@ Here, we provide an overview of the data and scripts that we used.
 * [Data for download](#data-for-download)
 
 Scripts were written by Fayzan Chaudhry and Hyein Cho.
+
 Samples were processed at the the sequencing facilities at MSKCC and Weill Cornell Medicine.
+
 Don't hesitate to get in touch with questions related to the code.
+
+Fayzan Chaudhry Fachaudhry96@gmail.com
+
+Hyein Cho choh@mskcc.org
 
 ![](WCM_MB_LOGO_HZSS1L_CLR_RGB.png)
 ## Bulk RNA-seq data processing
 
 We performed bulk RNAseq analysis to compare gene expression of grafted NURR1+ neurons, re-isolated at 1 dpt from the mouse brain (d1 graft), versus that of the matched FACS-purified neurons isolated immediately prior to transplantation (d0) or analyzed at 1 day of in vitro culture (d1 culture). Principal component analysis (PCA) and dendrogram analyses demonstrated that grafted dopamine neurons exhibited the most distinct transcriptional pattern compared to either sorted or in vitro cultured dopamine neurons.
 
-Sequences were aligned to hg19 reference using STAR aligner. Two-pass alignment was used to increase sensitivity. Reads were quantified and differential expressions were calculated using DESeq2. Functional enrichment analyses were done on the hallmarks of cancer gene dataset and gene ontology.
+Sequences were aligned to hg19 reference using `STAR` aligner. Two-pass alignment was used to increase sensitivity. Reads were quantified and differential expressions were calculated using `DESeq2`. Functional enrichment analyses were done on the hallmarks of cancer gene dataset and gene ontology.
 
 ## CRISPR
 
-CRISPR screen sequences were quantified by MAGeCK, and the differences and the correlations were generated from the quantifications.
+CRISPR screen sequences were quantified by `MAGeCK`, and the differences and the correlations were generated from the quantifications.
 
 ## scRNA-seq data processing
 

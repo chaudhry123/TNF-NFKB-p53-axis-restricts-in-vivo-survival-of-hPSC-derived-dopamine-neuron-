@@ -38,12 +38,10 @@ dim(DESeq2Obj)
 p1 = plotPCA(DESeq2Obj.vst, ntop=3000, intgroup="condition", returnData=T)
 
 percentVar = round(100 * attr(p1, "percentVar"))
-pdf("figure4a.pdf", width=7, height=7)
-ggplot() + geom_point(data=p1, aes(PC1, PC2, color=condition), size=4.0) +
+p1.4a = ggplot() + geom_point(data=p1, aes(PC1, PC2, color=condition), size=4.0) +
   xlab(paste0("PC1: ", percentVar[1], "%")) + ylab(paste0("PC2: ", percentVar[2], "%")) + coord_fixed() +
   theme(panel.grid=element_blank()) +
   geom_text_repel(data=p1, aes(PC1, PC2, label=row.names(p1)), size=3, max.overlaps=30, segment.alpha=0.1, box.padding=0.2, point.padding=0.20)
-dev.off()
 
 p1
 #                        PC1           PC2     group condition            name
@@ -67,6 +65,7 @@ row.hclust.all.d = as.dendrogram(row.hclust.all)
 row.hclust.all.d = row.hclust.all.d %>% set("labels", c("Day 1 Culture replicate 1", "Day 1 Culture replicate 2", "Day 0 replicate 1", "Day 0 replicate 2", "Day 1 Graft replicate 1", "Day 1 Graft replicate 2")) %>% set("leaves_pch", 19) %>% set("leaves_cex", 1.5) %>% set("leaves_col", c("green", "green", "red", "red", "blue", "blue"))
 par(mar=c(0.6, 0.6, 0.6, 10.1))
 pdf("figures4a.pdf", width=7, height=7)
+print(p1.4a)
 plot(row.hclust.all.d, sub="", xlab="", yaxt="n", horiz=T)
 dev.off()
 
@@ -235,7 +234,7 @@ gse.ordered.1$Description = paste0("GO: ", gse.ordered.1$Description)
 nes.1 = ggplot() + geom_point(data=gse.ordered.1, aes(rankx, abs(NES), fill=Legend, size=pointsize), shape=21, color=rgb(0, 0, 0, 0.10), show.legend=F) + scale_size_identity() + labs(x="Rank", y="Absolute value of GSEA NES") + scale_fill_manual(values=c("TNF alpha"="red", "Apoptosis"="saddlebrown", "P53"="purple", "nopass"=rgb(0, 0, 0, 0.10))) + theme_classic() + theme(plot.title=element_text(hjust=0.5)) + geom_text_repel(data=subset(gse.ordered.1, Legend != "nopass"), aes(rankx, abs(NES), label=subset(gse.ordered.1, Legend != "nopass")$Description, color=Legend), key_glyph="rect", size=4, max.overlaps=100, segment.alpha=0.2, box.padding=0.4, point.padding=1, force=2000, max.iter=3000000) + scale_color_manual(values=c("TNF alpha"="red", "Apoptosis"="saddlebrown", "P53"="purple"))
 
 pdf("figure4e.pdf", width=7, height=7)
-nes.1
+print(nes.1)
 dev.off()
 
 
