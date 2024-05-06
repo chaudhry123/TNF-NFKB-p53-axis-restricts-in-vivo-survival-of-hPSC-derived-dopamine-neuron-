@@ -9,8 +9,8 @@ Here, we provide an overview of the data and scripts that we used.
 
 **CONTENT**:
 
-* [Bulk RNA-seq](#Bulk-RNAseq-processingq)
-* [Single Cell](#Single-cell-RNA-seq-Processing)
+* [Bulk RNA-seq](#Bulk-RNA-seq-data-processing)
+* [Single Cell](#scRNA-seq-data-processing)
 * [Data for download](#data-for-download)
 
 Scripts were written by Fayzan Chaudhry and Hyein Cho.
@@ -18,10 +18,15 @@ Samples were processed at the the sequencing facilities at MSKCC and Weill Corne
 Don't hesitate to get in touch with questions related to the code.
 
 ![](WCM_MB_LOGO_HZSS1L_CLR_RGB.png)
-## Bulk RNA-seq
-We performed bulk RNAseq analysis to compare gene expression of grafted NURR1+ neurons, re-isolated at 1 dpt from the mouse brain (d1 graft), versus that of the matched FACS-purified neurons isolated immediately prior to transplantation (d0) or analyzed at 1 day of in vitro culture (d1 culture). Principal component analysis (PCA) and dendrogram analyses demonstrated that grafted dopamine neurons exhibited the most distinct transcriptional pattern compared to either sorted or in vitro cultured dopamine neurons
+## Bulk RNA-seq data processing
+
+We performed bulk RNAseq analysis to compare gene expression of grafted NURR1+ neurons, re-isolated at 1 dpt from the mouse brain (d1 graft), versus that of the matched FACS-purified neurons isolated immediately prior to transplantation (d0) or analyzed at 1 day of in vitro culture (d1 culture). Principal component analysis (PCA) and dendrogram analyses demonstrated that grafted dopamine neurons exhibited the most distinct transcriptional pattern compared to either sorted or in vitro cultured dopamine neurons.
+
+Sequences were aligned to hg19 reference using STAR aligner. Two-pass alignment was used to increase sensitivity. Reads were quantified and differential expressions were calculated using DESeq2. Functional enrichment analyses were done on the hallmarks of cancer gene dataset and gene ontology.
 
 ## CRISPR
+
+CRISPR screen sequences were quantified by MAGeCK, and the differences and the correlations were generated from the quantifications.
 
 ## scRNA-seq data processing
 
@@ -46,10 +51,14 @@ Finally, the visual symphony of differential expression unfolded through Enhance
 
 ## Data for download
 
-The raw data (fastq files, read counts from CellRanger) can be downloaded from GEO GSE217131.
+The raw (fastq files) and processed (read counts from HTSeq-count and CellRanger) can be downloaded from GEO [GSE216365](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE216365).
 
 
 >The easiest way to get started is to use the processed data provided here.
+
+For the CRISPR screen data, refer to the `internal-data` [directory](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/tree/main/CRISPR-screen-processing/internal-data) in this repository.
+
+For the bulk RNA-seq data, refer to the `internal-data` [directory](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/tree/main/Bulk-RNAseq-processing/internal-data) in this repository.
 
 For the single-cell data, some of the data can be downloaded from Box https://mskcc.box.com/s/wn5uvwxu2xm4hw219mo0id3r9nkyyprx
 ## Packages

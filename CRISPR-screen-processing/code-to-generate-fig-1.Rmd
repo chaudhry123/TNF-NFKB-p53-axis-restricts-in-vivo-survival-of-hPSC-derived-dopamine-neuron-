@@ -1,6 +1,6 @@
 ---
 title: "Figure 1 processing script"
-author: "Hyunwoo Cho"
+author: "Hyein Cho"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -14,18 +14,42 @@ knitr::opts_chunk$set(
 )
 ```
 
+### Preparing the data
+
+Download the raw data of CRISPR screen from GitHub link using this table. Also available at `internal-data` directory.
+
+| | |
+| - | - |
+| Xlsx file to generate Fig. 1B | [GitHub link](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/raw/main/CRISPR-screen-processing/internal-data/220929%20large%20pool%20gRNA%20raw%20and%20processed.xlsx) <br>[GEO link](https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE217131&format=file&file=GSE217131%5F220929%5Flarge%5Fpool%5FgRNA%5Fraw%5Fand%5Fprocessed%2Exlsx) |
+| Text files to generate Fig. 1C | 1. [D16 _in vitro_ _vs._ No Dox D25 _in vitro_](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/raw/main/CRISPR-screen-processing/internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_NoDox_July2018_All.txt) <br>2. [D16 _in vitro_ _vs._ Dox D25 _in vitro_](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/raw/main/CRISPR-screen-processing/internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_PlusDox_July2018_All.txt) <br>3. [D25 No Dox _in vitro_ _vs._ Dox D25 _in vitro_](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/raw/main/CRISPR-screen-processing/internal-data/First_Large_pool_Day25_NoDox_July2018_vs_Day25_PlusDox_July2018_All.txt) <br>4. [D25 No Dox _in vitro_ _vs._ Dox D25 _in vivo_](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/raw/main/CRISPR-screen-processing/internal-data/First_Large_pool_Day25_PlusDox_July2018_vs_Day25_PlusGRAFT_All.txt) |
+| Xlsx file to generate Fig. 1E | [GitHub link](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/raw/main/CRISPR-screen-processing/internal-data/220929%20small%20pool%20gRNA%20raw%20and%20processed%20figures.xlsx) <br>[GEO link](https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE217131&format=file&file=GSE217131%5F220929%5Fsmall%5Fpool%5FgRNA%5Fraw%5Fand%5Fprocessed%5Ffigures%2Exlsx)|
+
+
+
+### Libraries needed:
+
 ```{r load-library-1}
 library(data.table)
 library(openxlsx)
 library(pheatmap)
+library(DESeq2)
 library(magrittr)
 ```
 
-Figure 1B
+### Figure 1B
 
 The panel is based on the matrix of Pearson correlation of the median-normalized CRISPR screen counts.
 
-```{r load-fig-1b-1, include=F}
+```{r legacy-fig-1b-1, include=F}
+# large.screen.data = list(
+#   D16=fread("column 1.txt"),
+#   D25m=fread("column 2.txt"),
+#   D25p=fread("column 3.txt"),
+#   D25g=fread("column 4.txt")
+# )
+```
+
+```{r load-fig-1b-1}
 large.screen.data = list(
   D16=read.xlsx("internal-data/220929 large pool gRNA raw and processed.xlsx", sheet=1, rows=1:539),
   D25m=read.xlsx("internal-data/220929 large pool gRNA raw and processed.xlsx", sheet=2, rows=1:539),
@@ -35,13 +59,6 @@ large.screen.data = list(
 ```
 
 ```{r fig-1b-1, eval=F}
-# large.screen.data = list(
-#   D16=fread("column 1.txt"),
-#   D25m=fread("column 2.txt"),
-#   D25p=fread("column 3.txt"),
-#   D25g=fread("column 4.txt")
-# )
-
 all.equal(large.screen.data$D16$NAME, large.screen.data$D25m$NAME)
 # [1] TRUE
 all.equal(large.screen.data$D16$NAME, large.screen.data$D25p$NAME)
@@ -61,7 +78,7 @@ setdiff(large.screen.data$D16$SEQ, large.screen.data$D25g$SEQ)
 # character(0)
 ```
 
-Run median normalization and plot Pearson correlation.
+#### Run median (DESeq2) normalization and plot Pearson correlation.
 
 ```{r fig-1b-2}
 normalize.1b = list(
@@ -71,7 +88,7 @@ normalize.1b = list(
   D25g=data.frame(NAME=large.screen.data$D25g$NAME, D25g=large.screen.data$D25g[, 7])
 )
 
-library(DESeq2)
+# library(DESeq2)
 
 prenormalized.1b.df = Reduce(function(a, b) merge(a, b, by="NAME"), normalize.1b)
 
@@ -90,24 +107,24 @@ pheatmap(correlation.1b, cluster_rows=F, cluster_cols=F, border_color="black",
 )
 ```
 
-Figure 1C
+### Figure 1C
 
-```{r load-1c-data-1, include=F}
-volcano.input = list(
-  fread("internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_NoDox_July2018_All.txt"),
-  fread("internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_PlusDox_July2018_All.txt"),
-  fread("internal-data/First_Large_pool_Day25_NoDox_July2018_vs_Day25_PlusDox_July2018_All.txt"),
-  fread("internal-data/First_Large_pool_Day25_PlusDox_July2018_vs_Day25_PlusGRAFT_All.txt")
-)
-```
-
-```{r fig-1c}
+```{r legacy-1c-data, include=F}
 # volcano.input = list(
 #   fread("1c.1.txt"),
 #   fread("1c.2.txt"),
 #   fread("1c.3.txt"),
 #   fread("1c.4.txt")
 # )
+```
+
+```{r fig-1c}
+volcano.input = list(
+  fread("internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_NoDox_July2018_All.txt"),
+  fread("internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_PlusDox_July2018_All.txt"),
+  fread("internal-data/First_Large_pool_Day25_NoDox_July2018_vs_Day25_PlusDox_July2018_All.txt"),
+  fread("internal-data/First_Large_pool_Day25_PlusDox_July2018_vs_Day25_PlusGRAFT_All.txt")
+)
 
 for (j in 1:length(volcano.input)) {
   if (j == 1) {
@@ -156,19 +173,9 @@ for (j in 1:length(volcano.input)) {
 }
 ```
 
-Figure 1E
+### Figure 1E
 
-```{r load-1e-data-1, include=F}
-heatmap.input = list(
-  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=1),
-  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=2),
-  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=3),
-  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=4),
-  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=5)
-)
-```
-
-```{r fig-1e-1}
+```{r legacy-1e-data, include=F}
 # heatmap.input = list(
 #   D16=fread("1e.1.txt"),
 #   D25m=fread("1e.2.txt"),
@@ -176,6 +183,16 @@ heatmap.input = list(
 #   D25g1=fread("1e.4.txt"),
 #   D25g2=fread("1e.5.txt")
 # )
+```
+
+```{r fig-1e-1}
+heatmap.input = list(
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=1),
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=2),
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=3),
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=4),
+  read.xlsx("internal-data/220929 small pool gRNA raw and processed figures.xlsx", sheet=5)
+)
 
 heatmap.pre.cor = list(
   "D16"=data.frame(NAME=heatmap.input[[1]]$NAME, D16=heatmap.input[[1]][, 5]),
@@ -188,7 +205,7 @@ heatmap.pre.cor = list(
 heatmap.merged.cor = Reduce(function(a, b) merge(a, b, by="NAME"), heatmap.pre.cor)
 heatmap.merged.cor = heatmap.merged.cor[!grepl("CASP9_3", heatmap.merged.cor$NAME), ]
 
-library(DESeq2)
+# library(DESeq2)
 
 myColData = DataFrame(row.names=names(heatmap.pre.cor), condition=factor(names(heatmap.pre.cor)))
 DESeq2.1e = DESeqDataSetFromMatrix(data.frame(row.names=heatmap.merged.cor$NAME, heatmap.merged.cor[, -1]), colData=myColData, design= ~ condition)
@@ -211,12 +228,12 @@ pheatmap(correlation.1e, cluster_rows=F, cluster_cols=F, border_color="black",
 )
 ```
 
-Figure 1F
+### Figure 1F
+
+* heatmap.input = heatmap.input # from figure 1e
+* normalized count from DESeq2.1e is used here too.
 
 ```{r load-1f-data-1}
-# heatmap.input = heatmap.input # from figure 1e
-# normalized count from DESeq2.1e is used here too.
-
 heatmap.1f.1 = counts(DESeq2.1e, normalized=T)
 heatmap.1f.2 = data.frame(cbind(
   heatmap.1f.1[, 2] / heatmap.1f.1[, 1],
