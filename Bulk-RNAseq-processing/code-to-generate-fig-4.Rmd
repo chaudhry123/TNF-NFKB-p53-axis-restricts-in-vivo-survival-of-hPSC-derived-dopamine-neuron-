@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=F}
 knitr::opts_chunk$set(
   warning=F,
   message=F,
@@ -21,8 +21,9 @@ Download the sequence data from SRA and convert to `FASTQ` using this script.
 ```{bash download1, eval=F}
 wget -c https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-centos_linux64.tar.gz
 tar zxvf sratoolkit.current-centos_linux64.tar.gz
-# set up PATH variable.
-bulkf4=("" "" "" "" "" "")
+# set up PATH variable for prefetch and fastq-dump.
+# Refer to the GEO and SRA accession page. https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA893220
+bulkf4=("SRR22013626" "SRR22013628" "SRR22013630" "SRR22013632" "SRR22013634" "SRR22013636" "SRR22013627" "SRR22013629" "SRR22013631" "SRR22013633" "SRR22013635" "SRR22013637")
 prefetch `( IFS=$' '; echo "${bulkf4[*]}" )`
 for j in ${!bulkf4[@]}; do
   fastq-dump ${j}.sra --split-files --gzip -O ${j}/
@@ -119,7 +120,7 @@ htseq-count --version
 htseq-count -f bam -r pos -s no -t CDS -i gene_name -m union E223D0P531WT1_IGO_11351_C_1_S12.Twopass.bam gencode.v38lift37.annotation.gtf > Proj_11351_C_s_E223D0P531WT1-htseq-count-matrix.txt
 ```
 
-The output of the gene quantification can also be accessed at <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE18xxxx>.
+The output of the gene quantification can also be accessed at <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE216363>.
 
 The `MD5` sum of the gene quantification files is attached below.
 
@@ -132,6 +133,8 @@ cc4d5f75f9625560a2e575cda67249e2  Proj_11351_C_s_E223D0P531WT2-htseq-count-matri
 d24d8c218f8f2d486ca771d5df4e4198  Proj_11351_C_s_E223D1GRAFTP53WT1-htseq-count-matrix.txt
 0b8ab35617d9cb5ddea79e6e37e2acda  Proj_11351_C_s_E223D1GRAFTP53WT2-htseq-count-matrix.txt
 ```
+
+### Libraries needed:
 
 ```{r load-1}
 library(data.table)
@@ -348,7 +351,7 @@ nes.1
 ```
 
 
-```{r plotcounts-1, eval=F}
+```{r plotcounts-1, eval=F, include=F}
 p.h1 = plotCounts(DESeq2Obj, gene="TNFSF10", intgroup="condition", returnData=T)
 p.h2 = plotCounts(DESeq2Obj, gene="TNFSF12", intgroup="condition", returnData=T)
 p.h.combine = data.frame(rbind(p.h1, p.h2), gene=rep(c("TNFSF10", "TNFSF12"), each=6))

@@ -27,7 +27,6 @@ library(batchelor)
 library(dplyr)
 library(bluster)
 library(pheatmap)
-library(Seurat)
 library(BiocParallel)
 library(Matrix)
 addTaskCallback(function(...) {set.seed(100);TRUE}) #Permanently sets seed so is reproducible
@@ -36,7 +35,7 @@ addTaskCallback(function(...) {set.seed(100);TRUE}) #Permanently sets seed so is
 ##Load Object
 
 ```{r Object}
-path6 = "/Users/fayzan/D25_IGO_09060_B_1/outs/filtered_feature_bc_matrix"
+path6 = "D25_IGO_09060_B_1_filtered_feature_bc_matrix"
 combined_sce1 <- read10xCounts(c(path6), c("cellline"))
 
 ```
