@@ -39,7 +39,7 @@ large.screen.data = list(
 # large.screen.data = list(
 #   D16=fread("column 1.txt"),
 #   D25m=fread("column 2.txt"),
-#   D25p=fread("column 3.txt"),
+#   D25p=fread("colu`mn 3.txt"),
 #   D25g=fread("column 4.txt")
 # )
 
@@ -48,7 +48,7 @@ assertthat::assert_that(
   all.equal(large.screen.data$D16$NAME, large.screen.data$D25p$NAME),# [1] TRUE
   all.equal(large.screen.data$D16$NAME, large.screen.data$D25g$NAME),# [1] TRUE
   length(setdiff(large.screen.data$D16$NAME, large.screen.data$D25g$NAME)) == 0, # character(0)
-  msg = "D16 and D25 are not he same gene sets"
+  msg = "D16 and D25 are not identical gDNA sets"
   )
 
 ## use the same code example as above to validate D16 and D25 are the same
@@ -92,7 +92,7 @@ pheatmap(correlation.1b, cluster_rows=F, cluster_cols=F, border_color="black",
 ```
 
 Figure 1C
-[TODO : Why are we loading in the same files multiple times?]
+
 ```{r load-1c-data-1, include=F}
 volcano.input = list(
   fread("internal-data/First_Large_pool_Day16_NoDox_July2018_vs_Day25_NoDox_July2018_All.txt"),
