@@ -19,11 +19,11 @@ library(ggeasy)
 library(data.table)
 library(scuttle)
 library(SingleR)
-library("monocle3")
+library(monocle3)
 library("org.Hs.eg.db")
 addTaskCallback(function(...) {set.seed(100);TRUE})
 #load object Hyunwoo, Needs alignment correcting
-sce1 <- readRDS("Fayzan.4.SeuratObject.20220420.rds")
+sce1 <- readRDS("./TNF-NFKB-2024/Fayzan.4.SeuratObject.20220420.rds")
 
 fayzan.4 <- sce1
 # Take great extra care in counting WT and KO cells!!
@@ -59,7 +59,7 @@ fayzan.4@meta.data$condition %>% table
 #   WT   KO
 # 18577 24859
 
-fayzan.igraph.csv = fread("Fayzan.4.igraph.cutn.7.20220423.csv")
+fayzan.igraph.csv = fread("./TNF-NFKB-2024/Fayzan.4.igraph.cutn.7.20220423.csv")
 Idents(fayzan.4) = factor(as.character(fayzan.igraph.csv$igraph_cluster), levels=c("1", "2", "3", "4", "5", "6", "7"))
 
 fayzan.4@meta.data$igraph_cluster = factor(as.character(fayzan.igraph.csv$igraph_cluster), levels=c("1", "2", "3", "4", "5", "6", "7"))
