@@ -168,118 +168,58 @@ table. PLEASE COMPLETE FORMATTING THIS TABLE
 | foreach 1.5.2        | formattable 0.2.1    | future 1.32.0       | 
 | future.apply 1.11.0  | generics 0.1.3       | GenomeInfoDb 1.30.1 |
 | GenomeInfoDbData 1.2.7| GenomicRanges 1.46.1 | GetoptLong 1.0.5   |
-| ggalt 0.4.0        | ggbeeswarm
-0.7.2        | ggeasy 0.1.4        | ggplot2 3.4.2        | ggrastr 1.0.2
-       | ggrepel 0.9.3        | ggridges 0.5.4        | GlobalOptions 0.1.2
-       | globals 0.16.2        | glue 1.6.2        | goftest 1.2.3  |
-graphics 4.1.1        | grDevices 4.1.1        | grid 4.1.1        | gridExtra
-2.3        | gtable 0.3.3        | HDF5Array 1.22.1        | hms 1.1.3  |
-htmltools 0.5.5        | htmlwidgets 1.6.2        | httpuv 1.6.10  |
-httr 1.4.6        | ica 1.0.3        | igraph 1.4.2        | IRanges 2.28.0
-       | irlba 2.3.5.1        | iterators 1.0.14        | jsonlite 1.8.4
-       | KEGGREST 1.34.0        | KernSmooth 2.23.21        | knitr 1.43
-       | labeling 0.4.2        | later 1.3.1        | lattice 0.21.8  |
-lazyeval 0.2.2        | leiden 0.4.3        | lifecycle 1.0.3        | limma
-3.50.3        | listenv 0.9.0        | lme4 1.1.33        | lmtest 0.9.40
-       | locfit 1.5.9.7        | magick 2.7.4        | magrittr 2.0.3  |
-maps 3.4.1        | MASS 7.3.60        | MAST 1.20.0        | Matrix 1.5.1
-       | MatrixGenerics 1.6.0        | matrixStats 0.63.0        | memoise
-2.0.1        | metapod 1.2.0        | methods 4.1.1        | mime 0.12  |
-miniUI 0.1.1.1        | minqa 1.2.5        | monocle3 1.3.1        | munsell
-0.5.0        | nlme 3.1.162        | nloptr 2.0.3        | org.Hs.eg.db 3.14.0
-       | parallel 4.1.1        | parallelly 1.36.0        | patchwork 1.1.2
-       | pbapply 1.7.0        | pheatmap 1.0.12        | pillar 1.9.0  |
-pkgconfig 2.0.3        | plotly 4.10.2        | plyr 1.8.8        | png 0.1.8
-       | polyclip 1.10.4        | prettyunits 1.1.1        | progress 1.2.2
-       | progressr 0.13.0        | proj4 1.0.12        | promises 1.2.0.1
-       | purrr 1.0.1        | R.methodsS3 1.8.2        | R.oo 1.25.0  |
-R.utils 2.12.2        | R6 2.5.1        | RANN 2.6.1        | RColorBrewer
-1.1.3        | Rcpp 1.0.10        | RcppAnnoy 0.0.20        | RCurl 1.98.1.12
-       | reshape2 1.4.4        | reticulate 1.28        | rhdf5 2.38.1  |
-rhdf5filters 1.6.0        | Rhdf5lib 1.16.0        | rjson 0.2.21  |
-rlang 1.1.1        | rmarkdown 2.22        | ROCR 1.0.11        | RSQLite
-2.3.1        | rstudioapi 0.14        | rsvd 1.0.5        | Rtsne 0.16  |
-Rttf2pt1 1.3.12        | S4Vectors 0.32.4        | ScaledMatrix 1.2.0  |
-scales 1.2.1        | scater 1.22.0        | scattermore 0.8        | scran
-1.22.1        | sctransform 0.3.5        | scuttle 1.4.0        | Seurat 4.3.0
-       | SeuratObject 4.1.3        | shape 1.4.6        | shiny 1.7.4  |
-SingleCellExperiment 1.16.0        | SingleR 1.8.1        | sp 1.6.0  |
-sparseMatrixStats 1.6.0        | spatstat.data 3.0.1  |
-spatstat.explore 3.1.0        | spatstat.geom 3.2.1        | spatstat.random
-3.1.4        | spatstat.sparse 3.0.1        | spatstat.utils 3.0.3  |
-splines 4.1.1        | statmod 1.5.0        | stats 4.1.1        | stats4
-4.1.1        | stringi 1.7.12        | stringr 1.5.0  |
-SummarizedExperiment 1.24.0        | survival 3.5.5        | tensor 1.5
+| ggalt 0.4.0          | ggbeeswarm 0.7.2        | ggeasy 0.1.4        | 
+| ggplot2 3.4.2        | ggrastr 1.0.2        | ggrepel 0.9.3        | 
+| ggridges 0.5.4       | GlobalOptions 0.1.2  | globals 0.16.2        |
+| glue 1.6.2           | goftest 1.2.3  | graphics 4.1.1             |
+| grDevices 4.1.1      | grid 4.1.1        | gridExtra 2.3         | 
+| gtable 0.3.3        | HDF5Array 1.22.1        | hms 1.1.3  |
+| htmltools 0.5.5        | htmlwidgets 1.6.2        | httpuv 1.6.10  |
+| httr 1.4.6        | ica 1.0.3        | igraph 1.4.2        |
+| IRanges 2.28.0| irlba 2.3.5.1        | iterators 1.0.14      
+| jsonlite 1.8.4   | KEGGREST 1.34.0        | KernSmooth 2.23.21       
+| knitr 1.43 | labeling 0.4.2        | later 1.3.1        
+| lattice 0.21.8  | lazyeval 0.2.2        | leiden 0.4.3        | 
+| lifecycle 1.0.3        | limma 3.50.3        | listenv 0.9.0        |
+| lme4 1.1.33        | lmtest 0.9.40 | locfit 1.5.9.7        | 
+| magick 2.7.4        | magrittr 2.0.3  | maps 3.4.1        | 
+| MASS 7.3.60        | MAST 1.20.0        | Matrix 1.5.1| 
+| MatrixGenerics 1.6.0        | matrixStats 0.63.0        | memoise2.0.1        |
+| metapod 1.2.0        | methods 4.1.1        | mime 0.12  |
+| miniUI 0.1.1.1        | minqa 1.2.5        | monocle3 1.3.1        | 
+| munsell 0.5.0        | nlme 3.1.162        | nloptr 2.0.3        | 
+| org.Hs.eg.db 3.14.0 | parallel 4.1.1        | parallelly 1.36.0        | 
+| patchwork 1.1.2 | pbapply 1.7.0        | pheatmap 1.0.12        | 
+| pillar 1.9.0  | pkgconfig 2.0.3        | plotly 4.10.2        |
+| plyr 1.8.8        | png 0.1.8 | polyclip 1.10.4        |
+| prettyunits 1.1.1        | progress 1.2.2 | progressr 0.13.0        |
+| proj4 1.0.12        | promises 1.2.0.1 | purrr 1.0.1        | 
+| R.methodsS3 1.8.2        | R.oo 1.25.0  | R.utils 2.12.2        |
+| R6 2.5.1        | RANN 2.6.1        | RColorBrewer 1.1.3        |
+| Rcpp 1.0.10        | RcppAnnoy 0.0.20        | RCurl 1.98.1.12 | 
+| reshape2 1.4.4        | reticulate 1.28        | rhdf5 2.38.1  |
+| rhdf5filters 1.6.0        | Rhdf5lib 1.16.0        | rjson 0.2.21  |
+| rlang 1.1.1        | rmarkdown 2.22        | ROCR 1.0.11        | 
+| RSQLite 2.3.1        | rstudioapi 0.14        | rsvd 1.0.5        |
+| Rtsne 0.16  | Rttf2pt1 1.3.12        | S4Vectors 0.32.4        |
+| ScaledMatrix 1.2.0  | scales 1.2.1        | scater 1.22.0        |
+| scattermore 0.8        | scran 1.22.1        | sctransform 0.3.5  |     
+| scuttle 1.4.0        | Seurat 4.3.0 | SeuratObject 4.1.3        |
+| shape 1.4.6        | shiny 1.7.4  | SingleCellExperiment 1.16.0  |
+| SingleR 1.8.1        | sp 1.6.0  | sparseMatrixStats 1.6.0        | 
+| spatstat.data 3.0.1  | spatstat.explore 3.1.0        | spatstat.geom 3.2.1        | 
+| spatstat.random 3.1.4        | spatstat.sparse 3.0.1        | spatstat.utils 3.0.3  |
+| splines 4.1.1        | statmod 1.5.0        | stats 4.1.1        |
+| stats4 4.1.1        | stringi 1.7.12        | stringr 1.5.0  |
+| SummarizedExperiment 1.24.0        | survival 3.5.5        | tensor 1.5|
        | terra 1.7.29        | tibble 3.2.1        | tidyr 1.3.0  |
-tidyselect 1.2.0        | tools 4.1.1        | utf8 1.2.3        | utils 4.1.1
-       | uwot 0.1.14        | vctrs 0.6.2        | vipor 0.4.5        | viridis
-0.6.3        | viridisLite 0.4.2        | wesanderson 0.3.6        | withr
-2.5.0        | xfun 0.39        | xtable 1.8.4        | XVector 0.34.0  |
-zlibbioc 1.40.0        | zoo 1.8.12  |
+| tidyselect 1.2.0        | tools 4.1.1        | utf8 1.2.3        |
+| utils 4.1.1 | uwot 0.1.14        | vctrs 0.6.2        
+| vipor 0.4.5        | viridis 0.6.3        | viridisLite 0.4.2        |
+| wesanderson 0.3.6        | withr 2.5.0        | xfun 0.39        | 
+| xtable 1.8.4        | XVector 0.34.0  | zlibbioc 1.40.0        | 
+| zoo 1.8.12  | |  | 
 
-
-
-cachem 1.0.8 <br /> circlize 0.4.15 <br /> cli 3.6.1 <br /> clue
-0.3.64 <br /> cluster 2.1.4 <br /> codetools 0.2.19 <br /> colorspace
-2.1.0 <br /> compiler 4.1.1 <br /> ComplexHeatmap 2.10.0 <br /> cowplot
-1.1.1 <br /> crayon 1.5.2 <br /> data.table 1.14.8 <br /> datasets 4.1.1
-<br /> DBI 1.1.3 <br /> DelayedArray 0.20.0 <br /> DelayedMatrixStats
-1.16.0 <br /> deldir 1.0.6 <br /> digest 0.6.31 <br /> doParallel 1.0.17
-<br /> dplyr 1.1.2 <br /> dqrng 0.3.0 <br /> DropletUtils 1.14.2 <br />
-edgeR 3.36.0 <br /> ellipsis 0.3.2 <br /> EnhancedVolcano 1.12.0 <br />
-evaluate 0.21 <br /> extrafont 0.19 <br /> extrafontdb 1.0 <br /> fansi
-1.0.4 <br /> farver 2.1.1 <br /> fastmap 1.1.1 <br /> fitdistrplus
-1.1.11 <br /> foreach 1.5.2 <br /> formattable 0.2.1 <br /> future
-1.32.0 <br /> future.apply 1.11.0 <br /> generics 0.1.3 <br />
-GenomeInfoDb 1.30.1 <br /> GenomeInfoDbData 1.2.7 <br /> GenomicRanges
-1.46.1 <br /> GetoptLong 1.0.5 <br /> ggalt 0.4.0 <br /> ggbeeswarm
-0.7.2 <br /> ggeasy 0.1.4 <br /> ggplot2 3.4.2 <br /> ggrastr 1.0.2
-<br /> ggrepel 0.9.3 <br /> ggridges 0.5.4 <br /> GlobalOptions 0.1.2
-<br /> globals 0.16.2 <br /> glue 1.6.2 <br /> goftest 1.2.3 <br />
-graphics 4.1.1 <br /> grDevices 4.1.1 <br /> grid 4.1.1 <br /> gridExtra
-2.3 <br /> gtable 0.3.3 <br /> HDF5Array 1.22.1 <br /> hms 1.1.3 <br />
-htmltools 0.5.5 <br /> htmlwidgets 1.6.2 <br /> httpuv 1.6.10 <br />
-httr 1.4.6 <br /> ica 1.0.3 <br /> igraph 1.4.2 <br /> IRanges 2.28.0
-<br /> irlba 2.3.5.1 <br /> iterators 1.0.14 <br /> jsonlite 1.8.4
-<br /> KEGGREST 1.34.0 <br /> KernSmooth 2.23.21 <br /> knitr 1.43
-<br /> labeling 0.4.2 <br /> later 1.3.1 <br /> lattice 0.21.8 <br />
-lazyeval 0.2.2 <br /> leiden 0.4.3 <br /> lifecycle 1.0.3 <br /> limma
-3.50.3 <br /> listenv 0.9.0 <br /> lme4 1.1.33 <br /> lmtest 0.9.40
-<br /> locfit 1.5.9.7 <br /> magick 2.7.4 <br /> magrittr 2.0.3 <br />
-maps 3.4.1 <br /> MASS 7.3.60 <br /> MAST 1.20.0 <br /> Matrix 1.5.1
-<br /> MatrixGenerics 1.6.0 <br /> matrixStats 0.63.0 <br /> memoise
-2.0.1 <br /> metapod 1.2.0 <br /> methods 4.1.1 <br /> mime 0.12 <br />
-miniUI 0.1.1.1 <br /> minqa 1.2.5 <br /> monocle3 1.3.1 <br /> munsell
-0.5.0 <br /> nlme 3.1.162 <br /> nloptr 2.0.3 <br /> org.Hs.eg.db 3.14.0
-<br /> parallel 4.1.1 <br /> parallelly 1.36.0 <br /> patchwork 1.1.2
-<br /> pbapply 1.7.0 <br /> pheatmap 1.0.12 <br /> pillar 1.9.0 <br />
-pkgconfig 2.0.3 <br /> plotly 4.10.2 <br /> plyr 1.8.8 <br /> png 0.1.8
-<br /> polyclip 1.10.4 <br /> prettyunits 1.1.1 <br /> progress 1.2.2
-<br /> progressr 0.13.0 <br /> proj4 1.0.12 <br /> promises 1.2.0.1
-<br /> purrr 1.0.1 <br /> R.methodsS3 1.8.2 <br /> R.oo 1.25.0 <br />
-R.utils 2.12.2 <br /> R6 2.5.1 <br /> RANN 2.6.1 <br /> RColorBrewer
-1.1.3 <br /> Rcpp 1.0.10 <br /> RcppAnnoy 0.0.20 <br /> RCurl 1.98.1.12
-<br /> reshape2 1.4.4 <br /> reticulate 1.28 <br /> rhdf5 2.38.1 <br />
-rhdf5filters 1.6.0 <br /> Rhdf5lib 1.16.0 <br /> rjson 0.2.21 <br />
-rlang 1.1.1 <br /> rmarkdown 2.22 <br /> ROCR 1.0.11 <br /> RSQLite
-2.3.1 <br /> rstudioapi 0.14 <br /> rsvd 1.0.5 <br /> Rtsne 0.16 <br />
-Rttf2pt1 1.3.12 <br /> S4Vectors 0.32.4 <br /> ScaledMatrix 1.2.0 <br />
-scales 1.2.1 <br /> scater 1.22.0 <br /> scattermore 0.8 <br /> scran
-1.22.1 <br /> sctransform 0.3.5 <br /> scuttle 1.4.0 <br /> Seurat 4.3.0
-<br /> SeuratObject 4.1.3 <br /> shape 1.4.6 <br /> shiny 1.7.4 <br />
-SingleCellExperiment 1.16.0 <br /> SingleR 1.8.1 <br /> sp 1.6.0 <br />
-sparseMatrixStats 1.6.0 <br /> spatstat.data 3.0.1 <br />
-spatstat.explore 3.1.0 <br /> spatstat.geom 3.2.1 <br /> spatstat.random
-3.1.4 <br /> spatstat.sparse 3.0.1 <br /> spatstat.utils 3.0.3 <br />
-splines 4.1.1 <br /> statmod 1.5.0 <br /> stats 4.1.1 <br /> stats4
-4.1.1 <br /> stringi 1.7.12 <br /> stringr 1.5.0 <br />
-SummarizedExperiment 1.24.0 <br /> survival 3.5.5 <br /> tensor 1.5
-<br /> terra 1.7.29 <br /> tibble 3.2.1 <br /> tidyr 1.3.0 <br />
-tidyselect 1.2.0 <br /> tools 4.1.1 <br /> utf8 1.2.3 <br /> utils 4.1.1
-<br /> uwot 0.1.14 <br /> vctrs 0.6.2 <br /> vipor 0.4.5 <br /> viridis
-0.6.3 <br /> viridisLite 0.4.2 <br /> wesanderson 0.3.6 <br /> withr
-2.5.0 <br /> xfun 0.39 <br /> xtable 1.8.4 <br /> XVector 0.34.0 <br />
-zlibbioc 1.40.0 <br /> zoo 1.8.12 <br />
 
 ## Python
 
