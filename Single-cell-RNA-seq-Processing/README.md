@@ -1,35 +1,28 @@
-# Single-cell-RNA-seq-Processing
+## Single-cell-RNA-seq-Processing
 
-## Description
+### Description
 
-To further define the transcriptional landscape of grafted dopamine neurons, we performed single cell mRNA sequencing from p53 wild-type (WT) and p53 knock-out (KO) grafted neurons, re-isolated from the mouse brain at 1 dpt. This is the processing pipeline to generate the figures used in the accompanying paper.For full transparency and reproducibility, we've provided the code implementation, including scripts, data, and dependencies.
+* To define the transcriptional landscape of grafted dopamine neurons, we performed single cell mRNA sequencing from p53 wild-type (WT) and p53 knock-out (KO) grafted neurons, re-isolated from the mouse brain at 1 dpt. This is the processing pipeline to generate the figures used in the accompanying paper.For full transparency and reproducibility, we've provided the code implementation, including scripts, data, and dependencies.
 
-In this repository, you'll find a comprehensive breakdown of each step in the processing pipeline, from data preprocessing to figure generation. We've organized the code into logical modules to facilitate understanding and modification. Detailed comments and documentation are included to guide you through the implementation and parameter tuning process.
+* In this repository, you'll find a comprehensive breakdown of each step in the processing pipeline, from data preprocessing to figure generation. We've organized the code into logical modules to facilitate understanding and modification. Detailed comments and documentation are included to guide you through the implementation and parameter tuning process.
 
-To ensure that you can replicate our results precisely, we've also included the datasets used in our experiments. These datasets are properly formatted and annotated, making them ready for direct use with the provided scripts. Additionally, we've documented any preprocessing steps applied to the raw data, enabling you to reproduce our preprocessing pipeline if needed.
+* To ensure that you can replicate our results precisely, we've also included the datasets used in our experiments. These datasets are properly formatted and annotated, making them ready for direct use with the provided scripts. The R data objects for this repository are available to download at our Box foler (https://mskcc.box.com/s/wn5uvwxu2xm4hw219mo0id3r9nkyyprx).
 
-The codebase is designed to be modular and extensible, allowing for easy adaptation to new datasets or modifications to existing processing steps. Whether you're interested in reproducing our results, applying our methods to your own data, or extending our work with new techniques, the repository provides a solid foundation to build upon.
+* If you would like to generate these `.rds` files independently we included the preprocessing steps applied to the raw data, enabling you to reproduce our preprocessing pipeline if needed.
 
-Furthermore, we've included instructions on how to set up the necessary environment to run the code, including information on required dependencies and how to install them. We recommend using virtual environments to isolate the dependencies for this project, ensuring compatibility and reproducibility across different systems.
+* The codebase is designed to be modular and extensible, allowing for easy adaptation to new datasets or modifications to existing processing steps.
 
-In addition to the code and data, we've provided documentation on the experimental setup, including parameter configurations and hardware specifications used during testing. This information is crucial for understanding the context in which the figures were generated and for reproducing our experiments under similar conditions.
+* We included instructions on how to set up the necessary environment to run the code, including information on required dependencies and how to install them. We recommend using virtual environments to isolate the dependencies for this project, ensuring compatibility and reproducibility across different systems.
 
-We encourage collaboration and welcome contributions from the community to further improve the codebase and expand its functionality. Whether you spot a bug, have a suggestion for optimization, or want to propose a new feature, feel free to open an issue or submit a pull request on GitHub.
-
-By sharing our code and data openly, we aim to foster transparency, reproducibility, and collaboration in scientific research, ultimately advancing our collective understanding of the subject matter. We hope you find this resource useful and look forward to any feedback or contributions you may have.
+* Please [email](ffc4001@med.cornell.edu) us for bug reports or with suggestion for optimization. Feel free to open an issue or submit a pull request on GitHub.
 
 ### Executing program
 
-To obtain the processed single-cell experiment from the combined day 1 replicates, execute the combinedday1replicates script. Subsequently, apply additional processing steps using the provided processing script. For the day 25 in vitro cell line dataset, run the cell_line_d25 script to generate the processed single-cell experiment.
+* To obtain the processed single-cell experiment from the combined day 1 replicates, execute the `combinedday1replicates.Rmd` R markdown. Subsequently, apply additional processing steps using the provided processing script. For the day 25 in vitro cell line dataset, run the `cell_line_d25.Rmd` script to generate the processed single-cell experiment (`cellline_clean.rds` file).
 
-After obtaining the necessary objects, run the Figures1 script to convert them into a Seurat object and generate the figures for Figure 5 and Supplement Figure 5. The required objects for this step are the cell line object and finalobj.rds.
+* After obtaining the necessary objects, run the `Figures1.spin.Rmd` script to convert them into a `Seurat` objects and generate the figures for Figure 5 and Supplement Figure 5. The required objects for this step are the `cellline_clean.rds` and `FinalObj.rds` objects.
 
-For Monocle analysis, execute the Monocle.R script and the Jupyter notebook for survival analysis to generate Monocle results for the supplement.
+* For Monocle trajectory analysis, execute the `Monocle.R` script and the `Jupyter` Python notebook for survival analysis that generates the Monocle results for the supplement.
 
-These steps ensure the generation of processed single-cell experiments, conversion to Seurat objects, and the creation of figures for analysis and visualization, along with additional analysis using Monocle and survival analysis.
-
-## Authors
-
-Contributors names and contact info
-
-Fayzan Chaudhry Fachaudhry96@gmail.com
+### Authors
+Fayzan Chaudhry ffc4001@med.cornell.edu
