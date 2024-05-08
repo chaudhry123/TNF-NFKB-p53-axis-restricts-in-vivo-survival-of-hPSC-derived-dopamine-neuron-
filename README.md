@@ -223,155 +223,70 @@ table. PLEASE COMPLETE FORMATTING THIS TABLE
 
 ## Python
 
-| Package                       | Version            |
-|:------------------------------|:-------------------|
-| anndata                       | 0.9.2 <br />       |
-| anyio                         | 3.6.2 <br />       |
-| appnope                       | 0.1.3 <br />       |
-| argon2-cffi                   | 21.3.0 <br />      |
-| argon2-cffi-bindings          | 21.2.0 <br />      |
-| asttokens                     | 2.2.1 <br />       |
-| attrs                         | 23.1.0 <br />      |
-| backcall                      | 0.2.0 <br />       |
-| backports.functools-lru-cache | 1.6.4 <br />       |
-| beautifulsoup4                | 4.12.2 <br />      |
-| bleach                        | 6.0.0 <br />       |
-| certifi                       | 2023.5.7 <br />    |
-| cffi                          | 1.15.1 <br />      |
-| charset-normalizer            | 3.1.0 <br />       |
-| click                         | 8.1.7 <br />       |
-| cloudpickle                   | 2.2.1 <br />       |
-| comm                          | 0.1.3 <br />       |
-| contourpy                     | 1.0.7 <br />       |
-| cycler                        | 0.11.0 <br />      |
-| debugpy                       | 1.6.7 <br />       |
-| decorator                     | 5.1.1 <br />       |
-| defusedxml                    | 0.7.1 <br />       |
-| entrypoints                   | 0.4 <br />         |
-| executing                     | 1.2.0 <br />       |
-| fastjsonschema                | 2.16.3 <br />      |
-| filelock                      | 3.12.0 <br />      |
-| flit_core                     | 3.8.0 <br />       |
-| fonttools                     | 4.39.4 <br />      |
-| get-annotations               | 0.1.2 <br />       |
-| h5py                          | 3.11.0 <br />      |
-| idna                          | 3.4 <br />         |
-| igraph                        | 0.11.4 <br />      |
-| importlib-metadata            | 6.6.0 <br />       |
-| importlib-resources           | 5.12.0 <br />      |
-| ipykernel                     | 6.23.0 <br />      |
-| ipython                       | 8.4.0 <br />       |
-| ipython-genutils              | 0.2.0 <br />       |
-| ipywidgets                    | 8.0.6 <br />       |
-| jedi                          | 0.18.2 <br />      |
-| Jinja2                        | 3.1.2 <br />       |
-| joblib                        | 1.2.0 <br />       |
-| jsonschema                    | 4.17.3 <br />      |
-| jupyter                       | 1.0.0 <br />       |
-| jupyter_client                | 8.2.0 <br />       |
-| jupyter-console               | 6.6.3 <br />       |
-| jupyter_core                  | 5.3.0 <br />       |
-| jupyter-events                | 0.6.3 <br />       |
-| jupyter_server                | 2.5.0 <br />       |
-| jupyter_server_terminals      | 0.4.4 <br />       |
-| jupyterlab-pygments           | 0.2.2 <br />       |
-| jupyterlab-widgets            | 3.0.7 <br />       |
-| kiwisolver                    | 1.4.4 <br />       |
-| llvmlite                      | 0.36.0 <br />      |
-| loompy                        | 3.0.7 <br />       |
-| MarkupSafe                    | 2.1.2 <br />       |
-| matplotlib                    | 3.7.1 <br />       |
-| matplotlib-inline             | 0.1.6 <br />       |
-| mistune                       | 2.0.5 <br />       |
-| mpmath                        | 1.3.0 <br />       |
-| natsort                       | 8.4.0 <br />       |
-| nbclassic                     | 1.0.0 <br />       |
-| nbclient                      | 0.7.4 <br />       |
-| nbconvert                     | 7.4.0 <br />       |
-| nbformat                      | 5.8.0 <br />       |
-| nest-asyncio                  | 1.5.6 <br />       |
-| networkx                      | 3.1 <br />         |
-| notebook                      | 6.5.4 <br />       |
-| notebook_shim                 | 0.2.3 <br />       |
-| numba                         | 0.53.0 <br />      |
-| numpy                         | 1.23.0 <br />      |
-| numpy-groupies                | 0.9.22 <br />      |
-| packaging                     | 23.1 <br />        |
-| pandas                        | 2.0.3 <br />       |
-| pandocfilters                 | 1.5.0 <br />       |
-| parso                         | 0.8.3 <br />       |
-| patsy                         | 0.5.6 <br />       |
-| pexpect                       | 4.8.0 <br />       |
-| pickleshare                   | 0.7.5 <br />       |
-| Pillow                        | 9.5.0 <br />       |
-| pip                           | 23.1.2 <br />      |
-| pkgutil_resolve_name          | 1.3.10 <br />      |
-| platformdirs                  | 3.5.0 <br />       |
-| ply                           | 3.11 <br />        |
-| prometheus-client             | 0.16.0 <br />      |
-| prompt-toolkit                | 3.0.38 <br />      |
-| psutil                        | 5.9.5 <br />       |
-| ptyprocess                    | 0.7.0 <br />       |
-| pure-eval                     | 0.2.2 <br />       |
-| pycparser                     | 2.21 <br />        |
-| Pygments                      | 2.15.1 <br />      |
-| pynndescent                   | 0.5.12 <br />      |
-| pyobjc-core                   | 9.1.1 <br />       |
-| pyobjc-framework-Cocoa        | 9.1.1 <br />       |
-| pyparsing                     | 3.0.9 <br />       |
-| PyQt5                         | 5.15.7 <br />      |
-| PyQt5-sip                     | 12.11.0 <br />     |
-| pyreadr                       | 0.4.7 <br />       |
-| pyrsistent                    | 0.19.3 <br />      |
-| python-dateutil               | 2.8.2 <br />       |
-| python-json-logger            | 2.0.7 <br />       |
-| pytz                          | 2023.3 <br />      |
-| PyYAML                        | 6.0 <br />         |
-| pyzmq                         | 25.0.2 <br />      |
-| qtconsole                     | 5.4.3 <br />       |
-| QtPy                          | 2.3.1 <br />       |
-| requests                      | 2.30.0 <br />      |
-| rfc3339-validator             | 0.1.4 <br />       |
-| rfc3986-validator             | 0.1.1 <br />       |
-| scanpy                        | 1.9.8 <br />       |
-| scikit-learn                  | 1.2.2 <br />       |
-| scipy                         | 1.10.1 <br />      |
-| scvelo                        | 0.3.2 <br />       |
-| seaborn                       | 0.13.2 <br />      |
-| Send2Trash                    | 1.8.2 <br />       |
-| session-info                  | 1.0.0 <br />       |
-| setuptools                    | 67.7.2 <br />      |
-| shap                          | 0.41.0 <br />      |
-| sip                           | 6.7.9 <br />       |
-| six                           | 1.16.0 <br />      |
-| sklearn                       | 0.0.post5 <br />   |
-| slicer                        | 0.0.7 <br />       |
-| sniffio                       | 1.3.0 <br />       |
-| soupsieve                     | 2.3.2.post1 <br /> |
-| stack-data                    | 0.6.2 <br />       |
-| statsmodels                   | 0.14.1 <br />      |
-| stdlib-list                   | 0.10.0 <br />      |
-| sympy                         | 1.12 <br />        |
-| terminado                     | 0.17.1 <br />      |
-| texttable                     | 1.7.0 <br />       |
-| threadpoolctl                 | 3.1.0 <br />       |
-| tinycss2                      | 1.2.1 <br />       |
-| toml                          | 0.10.2 <br />      |
-| tomli                         | 2.0.1 <br />       |
-| torch                         | 2.0.1 <br />       |
-| torchaudio                    | 2.0.2 <br />       |
-| torchvision                   | 0.15.2 <br />      |
-| tornado                       | 6.3 <br />         |
-| tqdm                          | 4.65.0 <br />      |
-| traitlets                     | 5.9.0 <br />       |
-| typing_extensions             | 4.5.0 <br />       |
-| tzdata                        | 2023.3 <br />      |
-| umap-learn                    | 0.5.6 <br />       |
-| urllib3                       | 2.0.2 <br />       |
-| wcwidth                       | 0.2.6 <br />       |
-| webencodings                  | 0.5.1 <br />       |
-| websocket-client              | 1.5.1 <br />       |
-| wheel                         | 0.40.0 <br />      |
-| widgetsnbextension            | 4.0.7 <br />       |
-| xgboost                       | 1.7.6 <br />       |
-| zipp                          | 3.15.0 <br />      |
+|                      |                      |                     |
+|----------------------|----------------------|---------------------|
+| Anndata 0.9.2         | Appnope 0.1.3 | argon2-cffi-bindings 21.2.0        |
+| asttokens 2.2.1          | attrs23.1.0           |backcall0.2.0      |
+| backports.functools-lru-cache1.6.4     | beautifulsoup44.12.2       | bleach6.0.0 |
+| certifi2023.5.7 | cffi1.15.1  | charset-normalizer3.1.0 |
+| click8.1.7 | cloudpickle2.2.1  | comm0.1.3 |
+| contourpy1.0.7 | cycler0.11.0  |  debugpy1.6.7|
+| decorator5.1.1 | defusedxml0.7.1  | entrypoints0.4 |
+| executing1.2.0 |  fastjsonschema2.16.3 | filelock3.12.0 |
+| flit_core3.8.0 | fonttools4.39.4 | get-annotations0.1.2 |
+| h5py3.11.0 | idna3.4  | igraph0.11.4 |
+| importlib-metadata6.6.0 | importlib-resources5.12.0  | ipykernel6.23.0 |
+| ipython8.4.0 | ipython-genutils0.2.0  | ipywidgets8.0.6 |
+|  jedi0.18.2| Jinja23.1.2  | joblib1.2.0 |
+| jsonschema4.17.3 | jupyter1.0.0  | jupyter_client8.2.0 |
+| jupyter-console6.6.3 |  jupyter_core5.3.0 | jupyter-events0.6.3 |
+| jupyter_server2.5.0 | jupyter_server_terminals0.4.4  | jupyterlab-pygments0.2.2 |
+|  jupyterlab-widgets3.0.7|  kiwisolver1.4.4 | llvmlite0.36.0 |
+| loompy3.0.7 | MarkupSafe2.1.2  | matplotlib3.7.1 |
+| matplotlib-inline0.1.6 | mistune2.0.5  | mpmath1.3.0 |
+| natsort8.4.0 | nbclassic1.0.0  | nbclient0.7.4 |
+| nbconvert7.4.0 | nbformat5.8.0  | nest-asyncio1.5.6 |
+| networkx3.1 | notebook6.5.4  | notebook_shim0.2.3 |
+|  numba0.53.0| numpy1.23.0  |  numpy-groupies0.9.22|
+| packaging23.1 | pandocfilters1.5.0  | parso0.8.3 |
+| patsy0.5.6 |  pexpect4.8.0 | pickleshare0.7.5 |
+| Pillow9.5.0 | pip23.1.2  | pkgutil_resolve_name1.3.10 |
+| platformdirs3.5.0 | ply3.11  | prometheus-client0.16.0 |
+| prompt-toolkit3.0.38 | psutil5.9.5  | ptyprocess0.7.0 |
+| pure-eval0.2.2 | pycparser2.21  | Pygments2.15.1 |
+| pynndescent0.5.12 |  pyobjc-core9.1.1 | pyobjc-framework-Cocoa9.1.1 |
+| pyparsing3.0.9 |  PyQt55.15.7 | PyQt5-sip12.11.0 |
+| pyreadr0.4.7 | pyrsistent0.19.3  | python-dateutil2.8.2 |
+| python-json-logger2.0.7 |  pytz2023.3 | PyYAML6.0 |
+| pyzmq25.0.2 | qtconsole5.4.3  | QtPy2.3.1 |
+| requests2.30.0 | rfc3339-validator0.1.4  | rfc3986-validator0.1.1 |
+| scanpy1.9.8 | scikit-learn1.2.2  | scipy1.10.1 |
+| scvelo0.3.2 | seaborn0.13.2  | Send2Trash1.8.2 |
+| session-info1.0.0 |  setuptools67.7.2 | shap0.41.0 |
+| sip6.7.9 | six1.16.0  | sklearn0.0.post5 |
+|  slicer0.0.7| sniffio1.3.0  | soupsieve2.3.2.post1 |
+| stack-data0.6.2 | statsmodels0.14.1  | stdlib-list0.10.0 |
+| sympy1.12 | terminado0.17.1  | texttable1.7.0 |
+| threadpoolctl3.1.0 | tinycss21.2.1  | toml0.10.2  |
+| tomli2.0.1 |  torch2.0.1 | torchaudio2.0.2 |
+| torchvision0.15.2 | tornado6.3  | tqdm4.65.0 |
+| traitlets5.9.0 |  typing_extensions4.5.0 | tzdata2023.3 |
+| umap-learn0.5.6 |  urllib32.0.2 | wcwidth0.2.6 |
+| webencodings0.5.1 |  websocket-client1.5.1 | wheel0.40.0 |
+| widgetsnbextension4.0.7 |  xgboost1.7.6 | zipp3.15.0 |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
