@@ -1,8 +1,3 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
 
 # TNF NFKB p53 axis restricts in vivo survival of hPSC derived dopamine neuron
 
