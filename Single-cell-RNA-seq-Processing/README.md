@@ -22,7 +22,7 @@ To define the transcriptional landscape of grafted dopamine neurons, we performe
 
 * For day 25 in-vitro cell line dataset, run the `cell_line_d25.Rmd` script to generate the processed single-cell experiment (`cellline_clean.rds`) file.
 
-* After obtaining the necessary objects, run the `Figures1.spin.Rmd` script to convert them into a `Seurat` objects and generate the figures for Figure 5 and Supplement Figure 5. The required objects for this step are the `cellline_clean.rds`.
+* After obtaining the necessary objects, run the `Figures1.spin.Rmd` script to convert them into a `Seurat` objects and generate the figures for Figure 5 and Supplement Figure 5. The required objects for this step are the `cellline_clean.rds` and `FinalObj.RDS`.
 
 * For Monocle trajectory analysis, execute the `Monocle.R` script and the `Jupyter` Python notebook for survival analysis that generates the Monocle results for the supplement.
 
