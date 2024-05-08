@@ -211,8 +211,8 @@ table. PLEASE COMPLETE FORMATTING THIS TABLE
 | spatstat.random 3.1.4        | spatstat.sparse 3.0.1        | spatstat.utils 3.0.3  |
 | splines 4.1.1        | statmod 1.5.0        | stats 4.1.1        |
 | stats4 4.1.1        | stringi 1.7.12        | stringr 1.5.0  |
-| SummarizedExperiment 1.24.0        | survival 3.5.5        | tensor 1.5|
-       | terra 1.7.29        | tibble 3.2.1        | tidyr 1.3.0  |
+| SummarizedExperiment 1.24.0| survival 3.5.5 | tensor 1.5     |
+| terra 1.7.29        | tibble 3.2.1        | tidyr 1.3.0  |
 | tidyselect 1.2.0        | tools 4.1.1        | utf8 1.2.3        |
 | utils 4.1.1 | uwot 0.1.14        | vctrs 0.6.2        
 | vipor 0.4.5        | viridis 0.6.3        | viridisLite 0.4.2        |
