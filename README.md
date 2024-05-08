@@ -153,21 +153,22 @@ table. PLEASE COMPLETE FORMATTING THIS TABLE
 | beeswarm 0.4.0       | Biobase 2.54.0       | BiocGenerics 0.40.0 |
 | BiocNeighbors 1.12.0 | BiocParallel 1.28.3  | BiocSingular 1.10.0 |
 | Biostrings 2.62.0    | bit 4.0.5            | bit64 4.0.5         |
-| bitops 1.0.7         | blob 1.2.4           | bluster 1.4.0 
+| bitops 1.0.7         | blob 1.2.4           | bluster 1.4.0       |
 | boot 1.3.28.1        |cachem 1.0.8          | circlize 0.4.15     | 
-| cli 3.6.1            | clue 0.3.64          | cluster 2.1.4        | codetools 0.2.19        | colorspace
-2.1.0        | compiler 4.1.1        | ComplexHeatmap 2.10.0        | cowplot
-1.1.1        | crayon 1.5.2        | data.table 1.14.8        | datasets 4.1.1
-       | DBI 1.1.3        | DelayedArray 0.20.0        | DelayedMatrixStats
-1.16.0        | deldir 1.0.6        | digest 0.6.31        | doParallel 1.0.17
-       | dplyr 1.1.2        | dqrng 0.3.0        | DropletUtils 1.14.2  |
-edgeR 3.36.0        | ellipsis 0.3.2        | EnhancedVolcano 1.12.0  |
-evaluate 0.21        | extrafont 0.19        | extrafontdb 1.0        | fansi
-1.0.4        | farver 2.1.1        | fastmap 1.1.1        | fitdistrplus
-1.1.11        | foreach 1.5.2        | formattable 0.2.1        | future
-1.32.0        | future.apply 1.11.0        | generics 0.1.3  |
-GenomeInfoDb 1.30.1        | GenomeInfoDbData 1.2.7        | GenomicRanges
-1.46.1        | GetoptLong 1.0.5        | ggalt 0.4.0        | ggbeeswarm
+| cli 3.6.1            | clue 0.3.64          | cluster 2.1.4       | 
+| codetools 0.2.19     | colorspace 2.1.0     | compiler 4.1.1      | 
+| ComplexHeatmap 2.10.0| cowplot 1.1.1        | crayon 1.5.2        | 
+| data.table 1.14.8    | datasets 4.1.1       | DBI 1.1.3           | 
+| DelayedArray 0.20.0  | DelayedMatrixStats 1.16.0| deldir 1.0.6    | 
+| digest 0.6.31        | doParallel 1.0.17    | dplyr 1.1.2         | 
+| dqrng 0.3.0          | DropletUtils 1.14.2  | edgeR 3.36.0        | 
+| ellipsis 0.3.2       | EnhancedVolcano 1.12.0| evaluate 0.21      | 
+| extrafont 0.19       | extrafontdb 1.0        | fansi 1.0.4       | 
+| farver 2.1.1         | fastmap 1.1.1        | fitdistrplus 1.1.11 |
+| foreach 1.5.2        | formattable 0.2.1    | future 1.32.0       | 
+| future.apply 1.11.0  | generics 0.1.3       | GenomeInfoDb 1.30.1 |
+| GenomeInfoDbData 1.2.7| GenomicRanges 1.46.1 | GetoptLong 1.0.5   |
+| ggalt 0.4.0        | ggbeeswarm
 0.7.2        | ggeasy 0.1.4        | ggplot2 3.4.2        | ggrastr 1.0.2
        | ggrepel 0.9.3        | ggridges 0.5.4        | GlobalOptions 0.1.2
        | globals 0.16.2        | glue 1.6.2        | goftest 1.2.3  |
