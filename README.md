@@ -1,11 +1,15 @@
 
-# Bioinformatic methods
+# TNF NFKB p53 axis restricts in vivo survival of hPSC derived dopamine neuron
 
->TNF NFKB p53 axis restricts in vivo survival of hPSC derived dopamine neuron
+This repository contains the code and scripts used for the analysis of CRISPR screen, bulk RNAseq and scRNAseq generated in:
+
+[Kim TW. et al., TNF NFKB p53 axis restricts in vivo survival of hPSC derived dopamine neuron, bioRxiv, 2023](https://doi.org/10.1101/2023.03.29.534819)
+(<font size="2"> _Update link with peer-reviewed publication_ </font>)
+
+**Abstract**
 
 Ongoing, first-in-human clinical trials illustrate the feasibility and translational potential of human pluripotent stem cell (hPSC)-based cell therapies in Parkinson’s disease (PD). However, a major unresolved challenge in the field is the extensive cell death following transplantation with <10% of grafted dopamine neurons surviving. Here, we performed a pooled CRISPR/Cas9 screen to enhance survival of postmitotic dopamine neurons in vivo. We identified p53-mediated apoptotic cell death as major contributor to dopamine neuron loss and uncovered a causal link of TNFa-NFκB signaling in limiting cell survival. As a translationally applicable strategy to purify postmitotic dopamine neurons, we performed a cell surface marker screen that enabled purification without the need for genetic reporters. Combining cell sorting with adalimumab pretreatment, a clinically approved and widely used TNFa inhibitor, enabled efficient engraftment of postmitotic dopamine neurons leading to extensive re-innervation and functional recovery in a preclinical PD mouse model. Thus, transient TNFa inhibition presents a clinically relevant strategy to enhance survival and enable engraftment of postmitotic human PSC-derived dopamine neurons in PD.
 
-Here, we provide an overview of the data and scripts that we used. 
 
 **CONTENT**:
 
@@ -17,9 +21,9 @@ Scripts were written by Fayzan Chaudhry and Hyein Cho.
 
 Samples were processed at the the sequencing facilities at MSKCC and Weill Cornell Medicine.
 
-Don't hesitate to get in touch with questions related to the code.
+Please email us with questions related to the code.
 
-Fayzan Chaudhry Fachaudhry96@gmail.com
+Fayzan Chaudhry ffc4001@med.cornell.edu
 
 Hyein Cho choh@mskcc.org
 
@@ -28,7 +32,7 @@ Hyein Cho choh@mskcc.org
 
 We performed bulk RNAseq analysis to compare gene expression of grafted NURR1+ neurons, re-isolated at 1 dpt from the mouse brain (d1 graft), versus that of the matched FACS-purified neurons isolated immediately prior to transplantation (d0) or analyzed at 1 day of in vitro culture (d1 culture). Principal component analysis (PCA) and dendrogram analyses demonstrated that grafted dopamine neurons exhibited the most distinct transcriptional pattern compared to either sorted or in vitro cultured dopamine neurons.
 
-Sequences were aligned to hg19 reference using `STAR` aligner. Two-pass alignment was used to increase sensitivity. Reads were quantified and differential expressions were calculated using `DESeq2`. Functional enrichment analyses were done on the hallmarks of cancer gene dataset and gene ontology.
+Sequences were aligned to _hg19_ reference using `STAR` aligner. Two-pass alignment was used to increase sensitivity. Reads were quantified and differential expressions were calculated using `DESeq2`. Functional enrichment analyses were done on the hallmarks of cancer gene dataset and gene ontology.
 
 ## CRISPR
 
@@ -36,55 +40,53 @@ CRISPR screen sequences were quantified by `MAGeCK`, and the differences and the
 
 ## scRNA-seq data processing
 
-In principle, we followed the ideas and workflows discussed by Amezquita et al. in the excellent online book ["Orchestrating single-cell analysis"](https://osca.bioconductor.org/) describing single-cell analyses carried out with packages of the Bioconductor environment.
+Single cell analysis was performed in accordance with the guidelines and suggestions discussed in the excellent online book _Amezquita R. et al._  [Amezquita R. et al., Nature Methods, 2019, "Orchestrating single-cell analysis"](https://osca.bioconductor.org/) describing single-cell analyses carried out with packages of the Bioconductor environment.
 
 ### Processing and analysis
-The single-cell experiment underwent meticulous processing steps to unveil the intricacies of cellular dynamics. Initially, 10X Chromium Single Cell 3' v3 technology orchestrated the capture of cellular transcripts. These transcripts were then aligned to the human GRCh38 genome using the venerable Cell Ranger 5.0.0, based on GENCODE v32/Ensembl 98 annotations.
+* The single-cell experiment underwent meticulous processing steps to unveil the intricacies of cellular dynamics. Initially, 10X Chromium Single Cell 3' v3 technology orchestrated the capture of cellular transcripts. These transcripts were then aligned to the human GRCh38 genome using the venerable `CellRanger 5.0.0`, based on `GENCODE v32/Ensembl98` annotations.
 
-Following alignment, a stringent filtering process ensued. Cells were retained based on a trio of criteria: a minimum of 1000 Unique Molecular Identifier (UMI) counts, gene counts ranging from 500 to 7000, and a mitochondrial gene percentage below 25%, ensuring the exclusion of potentially compromised cells.
+* Following alignment, a stringent filtering process ensued. Cells were filtered based on the following criteria: 
+  + A minimum of 1000 Unique Molecular Identifier (UMI) counts.
+  + Gene counts ranging from 500 to 7000.
+  + Mitochondrial gene percentage below 25%.
 
-Normalization was then achieved through deconvolution using scran version 1.22.1, harmonizing the cellular landscapes. Concurrently, signal emanating from cell cycle-related gene expression was deftly excised, guided by the sage counsel of Seurat version 4.1.
+* Normalization was then achieved through deconvolution using `scran V1.22.1`. Cell cycle-related gene expression signature was removed using `Seurat V.4.1`.
 
-The exploration of cellular diversity commenced with the selection of 2000 highly variable genes, illuminating the multifaceted nature of gene expression. Principal component analysis unraveled the complex tapestry of cellular states, extracting the first 50 principal components from the cell cycle-regressed matrix.
+* For subsequent analysis 2000 most highly variable genes were selected and top 50 principal components were used from the cell cycle-regressed matrix.
 
-Subsequently, shared nearest neighbors emerged from the principal components, constructed using the buildSNNGraph function in R's scran, with a k parameter set to 40. The ethereal contours of cellular communities were unveiled through the walktrap algorithm, a testament to the power of the igraph package version 1.3.5.
+* Shared nearest neighbors clustering was constructed using the `buildSNNGraph` function in R's `scran`, with k = 40 and cellular clusters defined by `walktrap` algorithm implemented in `igraph V.1.3.5`.
 
-The cartographic journey continued with the uniform manifold approximation and projection (UMAP), unveiling the latent structure of cellular relationships. Differential gene expression was elucidated through the MAST algorithm in the Seurat package, shedding light on molecular disparities.
+* Differential gene expression was elucidated through the MAST algorithm in the `Seurat` package.
 
-Temporal dynamics were explored through pseudotime analysis via Monocle in R, while cellular trajectories were delineated using scVelo in Python, painting a picture of cellular evolution. Cluster annotation bestowed meaning upon cellular communities, courtesy of the clusterProfiler package version 4.2.2.
+* Temporal dynamics were explored through pseudotime analysis via `Monocle` in R, while cellular trajectories were delineated using `scVelo` in Python. Cluster annotation identified cellular identities using `clusterProfiler V.4.2.2`.
 
-Finally, the visual symphony of differential expression unfolded through EnhancedVolcano version 1.12.0, capturing the nuances of molecular significance in a vivid tableau. Thus, the journey of cellular exploration culminated in a rich tapestry of insights into the dynamic world of single-cell biology.
+* Visualization of differential expression by volcano plots was performed using `EnhancedVolcano V.1.12.0`.
 
-## Data for download
+## Data Access
 
 The raw (fastq files) and processed (read counts from HTSeq-count and CellRanger) can be downloaded from GEO [GSE216365](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE216365).
 
 
->The easiest way to get started is to use the processed data provided here.
+The easiest way to get started is to use the processed data provided here.
 
 For the CRISPR screen data, refer to the `internal-data` [directory](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/tree/main/CRISPR-screen-processing/internal-data) in this repository. Follow through the code highlighted in [code-to-generate-fig-1.Rmd](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/blob/main/CRISPR-screen-processing/code-to-generate-fig-1.Rmd).
 
 For the bulk RNA-seq data, refer to the `internal-data` [directory](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/tree/main/Bulk-RNAseq-processing/internal-data) in this repository. Follow through the code highlighted in [bulk-rnaseq-run-through.sh](https://github.com/chaudhry123/TNF-NFKB-p53-axis-restricts-in-vivo-survival-of-hPSC-derived-dopamine-neuron-/blob/main/Bulk-RNAseq-processing/bulk-rnaseq-run-through.sh).
 
 For the single-cell data, some of the data can be downloaded from Box https://mskcc.box.com/s/wn5uvwxu2xm4hw219mo0id3r9nkyyprx
-## Packages
-Package                       Version
------------------------------ -----------
-abind 1.4.5 <br />
-AnnotationDbi 1.56.2 <br />
-ape 5.7.1 <br />
-ash 1.0.15 <br />
-base 4.1.1 <br />
-beachmat 2.10.0 <br />
-beeswarm 0.4.0 <br />
-Biobase 2.54.0 <br />
-BiocGenerics 0.40.0 <br />
-BiocNeighbors 1.12.0 <br />
-BiocParallel 1.28.3 <br />
-BiocSingular 1.10.0 <br />
-Biostrings 2.62.0 <br />
-bit 4.0.5 <br />
-bit64 4.0.5 <br />
+
+### Software Packages
+Example of how to convert a long list of packages to a more readable
+table. PLEASE COMPLETE FORMATTING THIS TABLE
+                  
+|||||| 
+|-|-|-| 
+|abind 1.4.5 | AnnotationDbi 1.56.2  | ape 5.7.1|  
+|ash 1.0.15  | base 4.1.1  | beachmat 2.10.0| 
+|beeswarm 0.4.0 | Biobase 2.54.0 | BiocGenerics 0.40.0|
+|BiocNeighbors 1.12.0 |BiocParallel 1.28.3 | BiocSingular 1.10.0|
+|Biostrings 2.62.0 |bit 4.0.5 |bit64 4.0.5 |
+
 bitops 1.0.7 <br />
 blob 1.2.4 <br />
 bluster 1.4.0 <br />
