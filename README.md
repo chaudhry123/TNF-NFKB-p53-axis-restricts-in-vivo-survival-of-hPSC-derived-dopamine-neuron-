@@ -144,7 +144,8 @@ For the single-cell data, some of the data can be downloaded from Box
 ### Software Packages
 
 Example of how to convert a long list of packages to a more readable
-table. PLEASE COMPLETE FORMATTING THIS TABLE
+table. 
+## R
 
 |                      |                      |                     |
 |----------------------|----------------------|---------------------|
