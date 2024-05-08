@@ -22,7 +22,7 @@ library(SingleR)
 library("monocle3")
 library("org.Hs.eg.db")
 addTaskCallback(function(...) {set.seed(100);TRUE})
-#load object Hyunwoo, Needs alignment correcting
+#load object, Needs alignment correcting from your local dir
 sce1 <- readRDS("Fayzan.4.SeuratObject.20220420.rds")
 
 fayzan.4 <- sce1
@@ -59,6 +59,7 @@ fayzan.4@meta.data$condition %>% table
 #   WT   KO
 # 18577 24859
 
+#load object, Needs alignment correcting from your local dir
 fayzan.igraph.csv = fread("Fayzan.4.igraph.cutn.7.20220423.csv")
 Idents(fayzan.4) = factor(as.character(fayzan.igraph.csv$igraph_cluster), levels=c("1", "2", "3", "4", "5", "6", "7"))
 
