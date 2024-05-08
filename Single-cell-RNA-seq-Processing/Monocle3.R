@@ -31,7 +31,7 @@ addTaskCallback(function(...) {set.seed(100);TRUE})
 
 
 
-#load object Hyunwoo, Needs alignment correcting
+#load object Hyunwoo, Needs alignment correcting from your working dir
 sce1 <- readRDS("Fayzan.4.SeuratObject.20220420.rds")
 
 fayzan.4 <- sce1
@@ -68,6 +68,7 @@ fayzan.4@meta.data$condition %>% table
 #   WT   KO
 # 18577 24859
 
+#Load from your working dir
 fayzan.igraph.csv = fread("Fayzan.4.igraph.cutn.7.20220423.csv")
 Idents(fayzan.4) = factor(as.character(fayzan.igraph.csv$igraph_cluster), levels=c("1", "2", "3", "4", "5", "6", "7"))
 
@@ -101,7 +102,8 @@ color_samp <- wes_palette("Darjeeling1",3)
 wt_col <- color_samp[2]
 ko_col <- color_samp[3]
 
-DimPlot(sce1, reduction = "UMAP", group.by = "condition")
+f1 <- DimPlot(sce1, reduction = "UMAP", group.by = "condition")
+print(f1)
 expression_matrix <- sce1@assays$originalexp
 gene_symbol <- as.list(org.Hs.egSYMBOL)
 raw_count_data <- GetAssayData(sce1, assay = "originalexp", slot = "counts")
@@ -144,7 +146,8 @@ plot_cells(cds)
 
 
 
-plot_cells(cds,color_cells_by = "partition")
+f2 <- plot_cells(cds,color_cells_by = "partition")
+print(f2)
 cds <- learn_graph(cds, close_loop=FALSE, use_partition=FALSE)
 pdf("monocle_clusters.pdf",width = 6, height = 4)
 plot_cells(cds,

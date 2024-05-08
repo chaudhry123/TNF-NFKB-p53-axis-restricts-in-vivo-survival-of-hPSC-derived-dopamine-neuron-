@@ -22,6 +22,7 @@ library(SingleR)
 library(monocle3)
 library("org.Hs.eg.db")
 addTaskCallback(function(...) {set.seed(100);TRUE})
+
 #load object Hyunwoo, Needs alignment correcting
 sce1 <- readRDS("./TNF-NFKB-2024/Fayzan.4.SeuratObject.20220420.rds")
 

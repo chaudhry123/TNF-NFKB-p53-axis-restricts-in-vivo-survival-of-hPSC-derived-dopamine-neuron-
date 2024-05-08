@@ -31,7 +31,7 @@ library(magrittr)
 addTaskCallback(function(...) {set.seed(100);TRUE}) #Permanently sets seed so is reproducible
 ```
 
-##Load Object
+##Load Object from your working dir
 
 ```{r Object}
 path1="./TNF-NFKB-2024/WT1outs_filtered_feature_bc_matrix" 
@@ -58,38 +58,38 @@ combined_sce1 <- addPerFeatureQC(combined_sce1, flatten=TRUE)
 samples <- unique(combined_sce$Sample)
 
 ##plot number of UMI
-plotColData(combined_sce1, x="Sample", y="sum", colour_by="Sample") +
+f1 <- plotColData(combined_sce1, x="Sample", y="sum", colour_by="Sample") +
   ylab("Number of UMIs") + geom_hline(yintercept=min_UMI, color='red')
-
+print(f1)
 ## plot number of genes
-plotColData(combined_sce1, x="Sample", y="detected", colour_by="Sample") +
+f2 <- plotColData(combined_sce1, x="Sample", y="detected", colour_by="Sample") +
   ylab("Number of genes")+ geom_hline(yintercept=min_nGene, color='red') + geom_hline(yintercept=max_nGene, color='red')
-
+print(f2)
 ## plot number of Mt. counts
-plotColData(combined_sce1, x="Sample", y="subsets_Mt_sum", colour_by="Sample") + ylab("Number of Mt UMIs")
-
+f3 <- plotColData(combined_sce1, x="Sample", y="subsets_Mt_sum", colour_by="Sample") + ylab("Number of Mt UMIs")
+print(f3)
 ## plot % of Mt. counts
-plotColData(combined_sce1, x="Sample", y="subsets_Mt_percent", colour_by="Sample") + ylab("% of Mt UMIs") +
+f4 <- plotColData(combined_sce1, x="Sample", y="subsets_Mt_percent", colour_by="Sample") + ylab("% of Mt UMIs") +
   geom_hline(yintercept=max_mito_frac*100, color='red')
-
+print(f4)
 ## histogram of total UMI counts
-ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=sum)) + geom_histogram(binwidth=100, color='blue') +
+f5 <- ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=sum)) + geom_histogram(binwidth=100, color='blue') +
   facet_wrap(~ Sample, ncol=5) + xlab("Number of UMIs") + geom_vline(xintercept=min_UMI, color='red')
-
+print(f5)
 ## histogram of total gene counts
-ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=detected)) + geom_histogram(binwidth=50, color='lightblue') +
+f6 <- ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=detected)) + geom_histogram(binwidth=50, color='lightblue') +
   facet_wrap(~ Sample, ncol=5) + xlab("Number of genes") + geom_vline(xintercept=min_nGene, color='red')
-
+print(f6)
 ## number of genes vs. number of UMI color by %Mt genes
-ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=detected, y=sum)) + geom_point(aes(col=subsets_Mt_percent)) +
+f7 <- ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=detected, y=sum)) + geom_point(aes(col=subsets_Mt_percent)) +
   facet_wrap( ~Sample, ncol=5) + xlab("Gene counts") + ylab("UMI counts")
-
+print(f7)
 count.depth <- tibble::as_tibble(colData(combined_sce1)) %>% arrange(desc(sum))
-ggplot(data= count.depth, aes(x=1:nrow(count.depth), y=total)) + geom_point(aes(col=total)) + facet_wrap( ~Sample, ncol=5)
-
+f8 <- ggplot(data= count.depth, aes(x=1:nrow(count.depth), y=total)) + geom_point(aes(col=total)) + facet_wrap( ~Sample, ncol=5)
+print(f8)
 count.depth <- tibble::as_tibble(colData(combined_sce1)) %>% arrange(desc(sum))
-ggplot(data= count.depth, aes(x=1:nrow(count.depth), y=total)) + geom_point(aes(col=total)) #+ facet_wrap( ~Sample, ncol=2)
-
+f9 <- ggplot(data= count.depth, aes(x=1:nrow(count.depth), y=total)) + geom_point(aes(col=total)) #+ facet_wrap( ~Sample, ncol=2)
+print(f9)
 ## filter by UMI and gene counts
 print(paste("Size of before cell filtering", ncol(combined_sce1), "cells", nrow(combined_sce1), "genes"))
 out.of.range.UMI <- (combined_sce1$total <= min_UMI ) 
