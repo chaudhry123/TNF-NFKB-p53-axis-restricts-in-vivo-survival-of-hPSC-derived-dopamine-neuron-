@@ -307,10 +307,6 @@ f10 <-FeaturePlot(sce1.list[[2]], feature="TPH1", order=T, pt.size=1.0) + labs(t
 
 ##FIGURE 5C
 ```{r }
-#load cellline data
-#cellline <- readRDS("cellline_clean.rds")
-#cellline <- as.Seurat(cellline)
-
 #La Manno dataset used a reference
 combined_sce1 <- as.SingleCellExperiment(sce1)
 combined_sce1$clusters <- sce1$clusters
