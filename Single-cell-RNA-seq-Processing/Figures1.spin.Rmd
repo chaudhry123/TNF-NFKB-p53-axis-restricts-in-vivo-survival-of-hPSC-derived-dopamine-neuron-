@@ -333,6 +333,15 @@ v1 + v2 + v3
 f1 <- FeaturePlot(sce1, feature="HES5", order=T, pt.size=1.0) + labs(title="HES5") + scale_colour_gradientn(colours = terrain.colors(10))
 f1 <- FeaturePlot(sce1, feature="HES5", order=T, pt.size=1.0) + labs(title="HES5") + scale_colour_gradientn(colours = terrain.colors(10))
 
+##FIGURE 5G and 5I Cellline
+cellline <- readRDS("cellline_clean.rds")
+cellline <- as.Seurat(cellline)
+c1 <- FeaturePlot(combined_sce1, feature="ENSG00000197921", order=T, pt.size=1.0) + labs(title="HES5") + scale_colour_gradientn(colours = terrain.colors(10)) 
+print(c1)
+FeaturePlot(combined_sce1, feature="ENSG00000148773", order=T, pt.size=1.0) + labs(title="MKI67") + scale_colour_gradientn(colours = terrain.colors(10))
+c2 <- print(c2)
+
+
 #ALTERNATE FIGURE REQUESTS
 sce4 <- subset(sce1, ident == 1 |ident == 2 | ident == 4)
 Idents(sce4) <-sce4$condition
@@ -382,11 +391,3 @@ EnhancedVolcano(top2,
 )  + xlim(-.8, .8) 
 ```
 
-
-
----
-title: Figures1.R
-author: fayzan
-date: '2024-04-29'
-
----
