@@ -329,9 +329,6 @@ v2 <- VlnPlot(sce6, "TNFRSF12A", group.by = "pruned.labels",  cols = c(wt_col, k
 v3 <- VlnPlot(sce6, "JUN", group.by = "pruned.labels", cols = c(wt_col, ko_col),  pt.size = 0, split.by = "condition")
 v1 + v2 + v3
 
-cellline <- readRDS("cellline_clean.rds")
-cellline <- as.Seurat(cellline)
-
 f1 <- FeaturePlot(sce1, feature="HES5", order=T, pt.size=1.0) + labs(title="HES5") + scale_colour_gradientn(colours = terrain.colors(10))
 f1 <- FeaturePlot(sce1, feature="HES5", order=T, pt.size=1.0) + labs(title="HES5") + scale_colour_gradientn(colours = terrain.colors(10))
 
