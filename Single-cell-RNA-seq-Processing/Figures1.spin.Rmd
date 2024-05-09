@@ -37,13 +37,13 @@ addTaskCallback(function(...) {set.seed(100);TRUE})
 ```
 #Load object
 ```{r }
-combined_sce1 <- readRDS("FinalObj.RDS")
+combined_sce1 <- readRDS("./TNF-NFKB-2024/FinalObj.RDS")
 combined_sce2 <- combined_sce1
 sce2 <- as.Seurat(combined_sce2)
 Idents(sce2) <- sce2$clusters
-#
+
 sce1 <- sce2
-sce1
+
 ```
 
 ##############
@@ -58,11 +58,14 @@ DimPlot(sce1, group.by = "condition", cols = c(wt_col, ko_col), label = FALSE) +
 ```
 #MAKE HEAT MAP, CLUSTERPLOTS, VLN
 ```{r }
+require(MAST)
 markers <- FindAllMarkers(sce1, min.pct = 0.15, min.diff.pct = 0.04, logfc.threshold = .25, test.use = "MAST") #Try with #MAST
+assertthat::validate_that(nrow(markers) > 0 & ncol(markers) > 0, msg = "No cluster markers identified")
+
 top20 <- markers %>%  group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC)
 sce1 <- ScaleData(object = sce1, block.size=100)
-temp3 <- GetAssayData(sce1, slot = "scale.data")
-mat<- temp3[unique(c("JUN", top20$gene)), ] %>% as.matrix()
+temp3 <- GetAssayData(sce1, layer = "scale.data")
+mat<- temp3[which(rownames(temp3) %in% unique(c("JUN", top20$gene))), ] %>% as.matrix()
 heatmapanno <- HeatmapAnnotation(Group = sce1$condition, Cluster = Idents(sce1), col = list(Group=c("WT" = wt_col, "KO" = ko_col), Cluster =c("1" = "#F8766D", "2" =  "#C49A00", "3" =  "#53B400", "4" =  "#00C094", "5" =  "#00B6EB", "6" =  "#A58AFF", "7" ="#FB61D7")))
 col_fun = circlize::colorRamp2(c(-1, 0, 2), c("#140b34" , "#84206b", "#f6d746"))
 ```
@@ -88,11 +91,13 @@ Heatmap(mat, name = "Scaled Expression",
         raster_quality = 4)
 ```
 #Figure 5F
+```{r }
 sce3 <- subset(sce1, ident = 7, invert = TRUE)
 v1 <- VlnPlot(sce3, "BAX", split.by = "condition", split.plot = TRUE, cols = c(wt_col, ko_col), pt.size = 0)
 v2 <- VlnPlot(sce3, "TNFRSF12A", split.by = "condition", split.plot = TRUE, cols = c(wt_col, ko_col),  pt.size = 0)
 v3 <- VlnPlot(sce3, "JUN", split.by = "condition", split.plot = TRUE, cols = c(wt_col, ko_col),  pt.size = 0)
 v1+v2 + v3
+```
 
 ##Figure 5E
 ```{r }
@@ -303,8 +308,8 @@ f10 <-FeaturePlot(sce1.list[[2]], feature="TPH1", order=T, pt.size=1.0) + labs(t
 ##FIGURE 5C
 ```{r }
 #load cellline data
-cellline <- readRDS("cellline_clean.rds")
-cellline <- as.Seurat(cellline)
+#cellline <- readRDS("cellline_clean.rds")
+#cellline <- as.Seurat(cellline)
 
 #La Manno dataset used a reference
 combined_sce1 <- as.SingleCellExperiment(sce1)
