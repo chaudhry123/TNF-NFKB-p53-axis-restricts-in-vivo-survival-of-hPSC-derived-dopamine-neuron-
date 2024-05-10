@@ -17,6 +17,7 @@ To define the transcriptional landscape of grafted dopamine neurons, we performe
 * Please [email](ffc4001@med.cornell.edu) us for bug reports or with suggestion for optimization. Feel free to open an issue or submit a pull request on GitHub.
 
 ### Executing program
+* Pre-processed single cell data objects can be downloaded from [this Box folder](https://mskcc.box.com/s/wn5uvwxu2xm4hw219mo0id3r9nkyyprx), or they can be generated using the scripts provided here. If you choose to use the downloaded objects you may need to modify the code where these files are loaded (i.e. `readRDS` calls) to reflect your own working directory. For example, in `Figure1.spin.Rmd` the files are assumed to be in `./TNF-NFKB-2024/` relative to the current working directory. 
 
 * To obtain the processed single-cell experiment from the combined day 1 replicates, execute the `combinedday1replicates.Rmd` R markdown. Subsequently, apply additional processing steps by running `processing.R` that generates the `FinalObj.rds` file. 
 
