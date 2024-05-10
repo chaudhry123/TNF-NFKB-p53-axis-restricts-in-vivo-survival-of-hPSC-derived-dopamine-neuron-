@@ -34,10 +34,10 @@ addTaskCallback(function(...) {set.seed(100);TRUE}) #Permanently sets seed so is
 ##Load Object from your working dir
 
 ```{r Object}
-path1="./TNF-NFKB-2024/WT1outs_filtered_feature_bc_matrix" 
-path2="./TNF-NFKB-2024/WT2outs_filtered_feature_bc_matrix"
-path4="./TNF-NFKB-2024/KO1outs_filtered_feature_bc_matrix"
-path5="./TNF-NFKB-2024/KO2outs_filtered_feature_bc_matrix"
+path1="./TNF-NFKB-2024/WT1_filtered_feature_bc_matrix" 
+path2="./TNF-NFKB-2024/WT2_filtered_feature_bc_matrix"
+path4="./TNF-NFKB-2024/KO1_filtered_feature_bc_matrix"
+path5="./TNF-NFKB-2024/KO2_filtered_feature_bc_matrix"
 combined_sce = read10xCounts(c(path1, path2, path4, path5), c("WT1", "WT2","KO1", "KO2"))
 ```
 

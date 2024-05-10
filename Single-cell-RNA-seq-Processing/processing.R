@@ -27,15 +27,6 @@ addTaskCallback(function(...) {set.seed(100);TRUE})
 sce1 <- readRDS("./TNF-NFKB-2024/Fayzan.4.SeuratObject.20220420.rds")
 
 fayzan.4 <- sce1
-# Take great extra care in counting WT and KO cells!!
-# The result should be:
-#Always check WT and KO annotations!!
-#  fayzan.4@meta.data$Sample %>% table
-#WT1  WT2  KO1  KO2
-#7342 11235 11730 13129
-#fayzan.4@meta.data$condition %>% table
-#WT   KO
-#18577 24859
 
 # Before correcting,
 fayzan.4@meta.data$sample %>% table

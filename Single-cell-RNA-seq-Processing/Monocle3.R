@@ -1,5 +1,3 @@
-
-#Add edits for 5sa normalization
 rm(list = ls())
 library(DropletUtils)
 library(scater)
@@ -32,18 +30,9 @@ addTaskCallback(function(...) {set.seed(100);TRUE})
 
 
 #load object Hyunwoo, Needs alignment correcting from your working dir
-sce1 <- readRDS("Fayzan.4.SeuratObject.20220420.rds")
+sce1 <- readRDS("./TNF-NFKB-2024/Fayzan.4.SeuratObject.20220420.rds")
 
 fayzan.4 <- sce1
-# Take great extra care in counting WT and KO cells!!
-# The result should be:
-#Always check WT and KO annotations!!
-#  fayzan.4@meta.data$Sample %>% table
-#WT1  WT2  KO1  KO2
-#7342 11235 11730 13129
-#fayzan.4@meta.data$condition %>% table
-#WT   KO
-#18577 24859
 
 # Before correcting,
 fayzan.4@meta.data$sample %>% table
@@ -69,7 +58,7 @@ fayzan.4@meta.data$condition %>% table
 # 18577 24859
 
 #Load from your working dir
-fayzan.igraph.csv = fread("Fayzan.4.igraph.cutn.7.20220423.csv")
+fayzan.igraph.csv = fread("./TNF-NFKB-2024/Fayzan.4.igraph.cutn.7.20220423.csv")
 Idents(fayzan.4) = factor(as.character(fayzan.igraph.csv$igraph_cluster), levels=c("1", "2", "3", "4", "5", "6", "7"))
 
 fayzan.4@meta.data$igraph_cluster = factor(as.character(fayzan.igraph.csv$igraph_cluster), levels=c("1", "2", "3", "4", "5", "6", "7"))
@@ -161,7 +150,7 @@ plot_cells(cds,
            label_groups_by_cluster=FALSE,
            label_leaves=FALSE,
            label_branch_points=TRUE, label_cell_groups =  FALSE, show_trajectory_graph = TRUE)
-
+#Node placed at left most point of UMAP
 cds <- order_cells(cds)
 pdf("monocle_pseudotime.pdf",width = 6, height = 4)
 plot_cells(cds,
@@ -177,8 +166,7 @@ dev.off()
 
 #Gene Expression Maps
 AFD_genes <- c("NR4A2", "TH", "HES5", "MAP2")
-AFD_lineage_cds <- cds[rowData(cds)$gene_short_name %in% AFD_genes,
-                       colData(cds)$orig.ident %in% c("igraph_cluster")]
+AFD_lineage_cds <- cds[rowData(cds)$gene_short_name %in% AFD_genes, colData(cds)$orig.ident %in% c("igraph_cluster")]
 plot_genes_in_pseudotime(AFD_lineage_cds,
                          color_cells_by="pseudotime",
                          min_expr=0.5)
