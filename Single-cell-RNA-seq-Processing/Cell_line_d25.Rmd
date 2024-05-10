@@ -36,7 +36,7 @@ addTaskCallback(function(...) {set.seed(100);TRUE}) #Permanently sets seed so is
 
 ```{r Object}
 
-path6 = "cellline_filtered_feature_bc_matrix"
+path6 = "./TNF-NFKB-2024/cellline_filtered_feature_bc_matrix"
 combined_sce1 <- read10xCounts(c(path6), c("cellline"))
 
 ```
