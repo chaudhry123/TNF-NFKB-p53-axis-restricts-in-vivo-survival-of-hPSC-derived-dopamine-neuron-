@@ -1,6 +1,6 @@
 
 # TNF NFKB p53 axis restricts in vivo survival of hPSC derived dopamine neuron
-
+[![DOI](https://zenodo.org/badge/531525612.svg)](https://zenodo.org/doi/10.5281/zenodo.11176706)
 This repository contains the code and scripts used for the analysis of
 CRISPR screen, bulk RNAseq and scRNAseq generated in:
 
