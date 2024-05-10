@@ -19,8 +19,8 @@ esac
 # download SRA file and convert to fastq
 bulkf4=("SRR22013626" "SRR22013628" "SRR22013630" "SRR22013632" "SRR22013634" "SRR22013636" "SRR22013627" "SRR22013629" "SRR22013631" "SRR22013633" "SRR22013635" "SRR22013637")
 ./sratoolkit.3.1.0-centos_linux64/bin/prefetch `( IFS=$' '; echo "${bulkf4[*]}" )`
-for j in ${!bulkf4[@]}; do
-  ./sratoolkit.3.1.0-centos_linux64/bin/fastq-dump ${j}.sra --split-files --gzip -O ${j}/
+for j in ${bulkf4[@]}; do
+  ./sratoolkit.3.1.0-centos_linux64/bin/fastq-dump ${j}/${j}.sra --split-files --gzip -O ${j}/
 done
 
 # check md5 sums
@@ -59,15 +59,15 @@ reffasta='./references/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta'
 
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
-sudo ./aws/install --bin-dir ${PWD}/bin --install-dir ${PWD}/aws-cli
+./aws/install --bin-dir ${PWD}/bin --install-dir ${PWD}/aws-cli
 ./bin/aws s3 --no-sign-request --region eu-west-1 sync s3://ngi-igenomes/igenomes/Homo_sapiens/UCSC/hg19/Sequence/STARIndex/ ${refstar}/
 ./bin/aws s3 --no-sign-request --region eu-west-1 sync s3://ngi-igenomes/igenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/ ${reffasta}/
-wget -c https://github.com/alexdobin/STAR/releases/download/2.7.11b/STAR_2.7.11b.zip
-unzip STAR_2.7.11b.zip
+wget -c https://github.com/alexdobin/STAR/archive/refs/tags/2.5.1b.tar.gz
+tar zxvf 2.5.1b.tar.gz
 wget -c https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_38/GRCh37_mapping/gencode.v38lift37.annotation.gtf.gz
 gunzip gencode.v38lift37.annotation.gtf.gz
 
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir ${refstar} \
@@ -92,7 +92,7 @@ gunzip gencode.v38lift37.annotation.gtf.gz
   --alignIntronMin 20 \
   --alignIntronMax 20000 \
   --alignEndsType Local
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir ${refstar} \
@@ -117,7 +117,7 @@ gunzip gencode.v38lift37.annotation.gtf.gz
   --alignIntronMin 20 \
   --alignIntronMax 20000 \
   --alignEndsType Local
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir ${refstar} \
@@ -142,7 +142,7 @@ gunzip gencode.v38lift37.annotation.gtf.gz
   --alignIntronMin 20 \
   --alignIntronMax 20000 \
   --alignEndsType Local
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir ${refstar} \
@@ -167,7 +167,7 @@ gunzip gencode.v38lift37.annotation.gtf.gz
   --alignIntronMin 20 \
   --alignIntronMax 20000 \
   --alignEndsType Local
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir ${refstar} \
@@ -192,7 +192,7 @@ gunzip gencode.v38lift37.annotation.gtf.gz
   --alignIntronMin 20 \
   --alignIntronMax 20000 \
   --alignEndsType Local
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir ${refstar} \
@@ -222,7 +222,7 @@ gunzip gencode.v38lift37.annotation.gtf.gz
 cat SRR22013*/*SJ.out.tab | awk '($1 != "chrM" && $5 > 0 && $6 == 0 && $7 > 2)' | cut -f1-6 | sort | uniq > SJ.filtered.tab
 
 # genome generate
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode genomeGenerate \
   --runThreadN 16 \
   --genomeDir `pwd` \
@@ -232,7 +232,7 @@ cat SRR22013*/*SJ.out.tab | awk '($1 != "chrM" && $5 > 0 && $6 == 0 && $7 > 2)' 
   --sjdbFileChrStartEnd SJ.filtered.tab
 
 # second alignment
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir `pwd` \
@@ -256,7 +256,7 @@ cat SRR22013*/*SJ.out.tab | awk '($1 != "chrM" && $5 > 0 && $6 == 0 && $7 > 2)' 
   --alignIntronMin 20 \
   --alignIntronMax 20000 \
   --alignEndsType Local
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir `pwd` \
@@ -280,7 +280,7 @@ cat SRR22013*/*SJ.out.tab | awk '($1 != "chrM" && $5 > 0 && $6 == 0 && $7 > 2)' 
   --alignIntronMin 20 \
   --alignIntronMax 20000 \
   --alignEndsType Local
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir `pwd` \
@@ -304,7 +304,7 @@ cat SRR22013*/*SJ.out.tab | awk '($1 != "chrM" && $5 > 0 && $6 == 0 && $7 > 2)' 
   --alignIntronMin 20 \
   --alignIntronMax 20000 \
   --alignEndsType Local
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir `pwd` \
@@ -328,7 +328,7 @@ cat SRR22013*/*SJ.out.tab | awk '($1 != "chrM" && $5 > 0 && $6 == 0 && $7 > 2)' 
   --alignIntronMin 20 \
   --alignIntronMax 20000 \
   --alignEndsType Local
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir `pwd` \
@@ -352,7 +352,7 @@ cat SRR22013*/*SJ.out.tab | awk '($1 != "chrM" && $5 > 0 && $6 == 0 && $7 > 2)' 
   --alignIntronMin 20 \
   --alignIntronMax 20000 \
   --alignEndsType Local
-./STAR_2.7.11b/Linux_x86_64/STAR \
+./STAR-2.5.1b/bin/Linux_x86_64/STAR \
   --runMode alignReads \
   --runThreadN 16 \
   --genomeDir `pwd` \
