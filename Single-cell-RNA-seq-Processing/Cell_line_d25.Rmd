@@ -36,7 +36,7 @@ addTaskCallback(function(...) {set.seed(100);TRUE}) #Permanently sets seed so is
 
 ```{r Object}
 
-path6 = "D25_IGO_09060_B_1_filtered_feature_bc_matrix"
+path6 = "cellline_filtered_feature_bc_matrix"
 combined_sce1 <- read10xCounts(c(path6), c("cellline"))
 
 ```
@@ -60,14 +60,14 @@ print(f1)
 ## plot number of genes
 f2 <- plotColData(combined_sce1, x="Sample", y="detected", colour_by="Sample") +
   ylab("Number of genes")+ geom_hline(yintercept=min_nGene, color='red') + geom_hline(yintercept=max_nGene, color='red')
-rint(f2)
+print(f2)
 ## plot number of Mt. counts
 f3 <- plotColData(combined_sce1, x="Sample", y="subsets_Mt_sum", colour_by="Sample") + ylab("Number of Mt UMIs")
-rint(f3)
+print(f3)
 ## plot % of Mt. counts
 f4 <- plotColData(combined_sce1, x="Sample", y="subsets_Mt_percent", colour_by="Sample") + ylab("% of Mt UMIs") +
   geom_hline(yintercept=max_mito_frac*100, color='red')
-rint(f4)
+print(f4)
 
 ## histogram of total UMI counts
 f5 <- ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=sum)) + geom_histogram(binwidth=100, color='blue') +
@@ -76,18 +76,18 @@ print(f5)
 ## histogram of total gene counts
 f6 <- ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=detected)) + geom_histogram(binwidth=50, color='lightblue') +
   facet_wrap(~ Sample, ncol=5) + xlab("Number of genes") + geom_vline(xintercept=min_nGene, color='red')
-rint(f6)
+print(f6)
 ## number of genes vs. number of UMI color by %Mt genes
 f7 <- ggplot(data=tibble::as_tibble(colData(combined_sce1)), aes(x=detected, y=sum)) + geom_point(aes(col=subsets_Mt_percent)) +
   facet_wrap( ~Sample, ncol=5) + xlab("Gene counts") + ylab("UMI counts")
-rint(f7)
+print(f7)
 count.depth <- tibble::as_tibble(colData(combined_sce1)) %>% arrange(desc(sum))
 f8 <- ggplot(data= count.depth, aes(x=1:nrow(count.depth), y=total)) + geom_point(aes(col=total)) + facet_wrap( ~Sample, ncol=5)
-rint(f8)
+print(f8)
 
 count.depth <- tibble::as_tibble(colData(combined_sce1)) %>% arrange(desc(sum))
 f9 <- ggplot(data= count.depth, aes(x=1:nrow(count.depth), y=total)) + geom_point(aes(col=total)) #+ facet_wrap( ~Sample, ncol=2)
-rint(f9)
+print(f9)
 
 ## filter by UMI and gene counts
 print(paste("Size of before cell filtering", ncol(combined_sce1), "cells", nrow(combined_sce1), "genes"))
