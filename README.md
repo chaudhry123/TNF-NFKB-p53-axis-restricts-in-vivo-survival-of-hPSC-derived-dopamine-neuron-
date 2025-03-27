@@ -175,7 +175,7 @@ For the single-cell data, some of the data can be downloaded from Box
 | grDevices 4.1.1      | grid 4.1.1        | gridExtra 2.3         | 
 | gtable 0.3.3        | HDF5Array 1.22.1        | hms 1.1.3  |
 | htmltools 0.5.5        | htmlwidgets 1.6.2        | httpuv 1.6.10  |
-| httr 1.4.6        | ica 1.0.3        | igraph 1.4.2        |
+| httr 1.4.6        | ica 1.0.3        | igraph 1.3.5        |
 | IRanges 2.28.0| irlba 2.3.5.1        | iterators 1.0.14      
 | jsonlite 1.8.4   | KEGGREST 1.34.0        | KernSmooth 2.23.21       
 | knitr 1.43 | labeling 0.4.2        | later 1.3.1        
